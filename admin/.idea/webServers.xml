@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="74b0a24c-d9d9-434e-896e-9f83316a0358" name="IERG4210-Server">
+        <fileTransfer rootFolder="/var/www/html" accessType="SFTP" host="35.77.191.219" port="22" sshConfigId="fa84b544-8303-425e-91a2-073c241b3918" sshConfig="ec2-user@35.77.191.219:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" isUseRsync="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

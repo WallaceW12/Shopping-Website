@@ -1,3 +1,11 @@
+<?php
+
+   //require_once '';
+   //$sql = "SELECT * FROM product";
+   //$all_prodcut = $conn->query($sql);
+?>
+
+
 <!DOCTYPE html>
 <html>
      <head>
@@ -12,38 +20,40 @@
          <!--Nav -->
         
             <div class="nav container">
-               <a href="admin.html" class="logo">Admin</a>
-               <a href="home.html" class="logo">Shopping Sites</a>
+               
+               <a href="/shop/home.php" class="logo">Shopping Sites</a>
                <!--Cart -->
-               
-               <i class='bx bx-cart' class = "logo" id="cart-icon">
+               <div class="right-nav">
+                  <a href="/admin/admin.php" class="logo">Admin</a>
                   
-                  <div class="cart">
-                     <h2 class="cart-title">Your Cart</h2>
-                     <!--cart content-->
+                  <i class='bx bx-cart' class = "logo" id="cart-icon">
                   
-                        <div class="cart-box">
-                           <img src="airpod.jpg" alt="" class="cart-img">
-                           <div class="detail-box">
-                              <div class="cart-product-title">Airpod</div>
-                              <div class="cart-price">$25</div>
-                              <div class="cart-quantity"></div>
-                              <input type="number" min="0" value="1" class="cart-quantity">
-                           </div>
-                           <!--Remove-->
-                           <i class='bx bx-trash remove-item'></i>
-                        </div>
+                     <div class="cart">
+                        <h2 class="cart-title">Your Cart</h2>
+                        <!--cart content-->
                      
-                        <div class="total">
-                           <div class="total-title">Total $25</div>
-                           <div class="totalprice"></div>
+                           <div class="cart-box">
+                              <img src="airpod.jpg" alt="" class="cart-img">
+                              <div class="detail-box">
+                                 <div class="cart-product-title">Airpod</div>
+                                 <div class="cart-price">$25</div>
+                                 <div class="cart-quantity"></div>
+                                 <input type="number" min="0" value="1" class="cart-quantity">
+                              </div>
+                              <!--Remove-->
+                              <i class='bx bx-trash remove-item'></i>
+                           </div>
+                        
+                           <div class="total">
+                              <div class="total-title">Total $25</div>
+                              <div class="totalprice"></div>
+                           </div>
+                           <!--Purchase-->
+                           <button type="button" class="buy-button">Purchase</button>
                         </div>
-                        <!--Purchase-->
-                        <button type="button" class="buy-button">Purchase</button>
-                     </div>
-               
-               </i> 
-               
+                  
+                  </i> 
+               </div>
                     <!--horizontal Nav-->
             </div>
              
@@ -81,6 +91,9 @@
                   
                </section>
 
+               <?php
+                  //while($row = mysqli_fetch_assoc($all_prodcut)){
+               ?>
                <li class="product_box">
                   <a href="airpod.html"> 
                      <img src="airpod.jpg" alt="" class="product-img">
@@ -90,6 +103,9 @@
                   <!--box cart icon-->
                   <i class='bx bx-cart-add'></i> 
                 </li>
+               <?php
+               // }
+               ?>
 
                 <!--Box2-->
                 <li class="product_box">

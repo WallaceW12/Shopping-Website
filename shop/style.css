@@ -66,6 +66,7 @@ header{
     padding: 1vh;
 
 }
+ 
 .Cat-menu{
     position: fixed;
     display: flex;
@@ -89,6 +90,7 @@ header{
 }
  
 .nav{
+  
     display: flex;
     align-items: left;
     padding: 20px 0;

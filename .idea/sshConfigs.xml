@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig host="35.77.191.219" id="c6d6f144-b32c-4e85-a27e-70e32aa69719" keyPath="C:\Users\user\Desktop\Year 3 Sem 2\IERG4210\IERG4210_privatekey.ppk" port="22" nameFormat="DESCRIPTIVE" username="ec2-user" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>
