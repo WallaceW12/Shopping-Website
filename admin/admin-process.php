@@ -15,7 +15,8 @@ if (empty($_REQUEST['action']) || !preg_match('/^\w+$/', $_REQUEST['action'])) {
 try {
 
 	if (($returnVal = call_user_func('ierg4210_' . $_REQUEST['action'])) === false) {
-		if ($db && $db->errorCode()) 
+
+        if ($db && $db->errorCode())
 			error_log(print_r($db->errorInfo(), true));
 		echo json_encode(array('failed'=>'1'));
 	}

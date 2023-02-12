@@ -32,22 +32,17 @@ function ierg4210_cat_fetchall() {
 function ierg4210_prod_insert() {
     // input validation or sanitization
 
-    // DB manipulation
-    global $db;
-    $db = ierg4210_DB();
-
-
-
     // TODO: complete the rest of the INSERT command
-    if (!preg_match('/^\d*$/', $_POST['CID']))
+    if (!preg_match('/^\d*$/', $_POST["CID"]))
         throw new Exception("invalid-cid");
-    $_POST['CID'] = (int) $_POST['cid'];
-    if (!preg_match('/^[\w\- ]+$/', $_POST['NAME']))
+    $_POST['CID'] = (int) $_POST['CID'];
+    if (!preg_match('/^[\w\- ]+$/', $_POST["NAME"]))
         throw new Exception("invalid-name");
-    //$_POST['NAME'] = (string) $_POST['NAME'];
-    if (!preg_match('/^[\d]+$/', $_POST['PRICE']))
+    if (!preg_match('/^[\d\.]+$/', $_POST['PRICE']))
         throw new Exception("invalid-price");
-    //$_POST['PRICE'] = (int) $_POST['price'];
+
+    if (!preg_match('/^[\d]+$/', $_POST['INVENTORY']))
+        throw new Exception("invalid-inventory");
     if (!preg_match('/^[\w\- ]+$/', $_POST['DESCRIPTION']))
         throw new Exception("invalid-textt");
    // $_POST['description'] = (string) $_POST['description'];
@@ -57,10 +52,15 @@ function ierg4210_prod_insert() {
     $price = $_POST["PRICE"];
     $inventory = $_POST["INVENTORY"];
     $desc = $_POST["DESCRIPTION"];
-    $sql="INSERT INTO products (CID, NAME, PRICE, DESCRIPTION, INVENTORY, IMAGE, THUMBNAIL) VALUES (?, ?, ?, ?, ?, ?, ?);";
-
     $default_image = "./images/_default.jpg";
     $default_thumbnail= "./images/thumbnails/_default_thumbnail.jpg";
+    $sql="INSERT INTO PRODUCTS (CID, NAME, PRICE, INVENTORY, DESCRIPTION, IMAGE, THUMBNAIL) VALUES (?, ?, ?, ?, ?, ?, ?);";
+
+    // DB manipulation
+    global $db;
+    $db = ierg4210_DB();
+
+
 
     $q = $db->prepare($sql);
     $q->bindParam(1, $cid);
@@ -70,28 +70,36 @@ function ierg4210_prod_insert() {
     $q->bindParam(5, $inventory);
     $q->bindParam(6, $default_image);
     $q->bindParam(7, $default_thumbnail);
+
     $q->execute();
     
     $lastId = $db->lastInsertId();
-    
+
+
+    if($_FILES["IMAGE"]["type"] == "image/jpg"){
+        echo("NRUH JPG");
+        header('Location: admin.php#category-add-form');
+        exit();
+
+    }
     // Copy the uploaded file to a folder which can be publicly accessible at incl/img/[pid].jpg
     if ($_FILES["IMAGE"]["error"] == 0
-    && ($_FILES["IMAGE"]["type"] == "image/jpeg" || $_FILES["IMAGE"]["type"] == "image/png" || $_FILES["IMAGE"]["type"] == "image/gif")
-    && (mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/jpeg" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/png" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/gif")
-    && $_FILES["IMAGE"]["size"] < 10000000){
+    && ($_FILES["IMAGE"]["type"] == "image/jpeg" || $_FILES["IMAGE"]["type"] == "image/png" || $_FILES["IMAGE"]["type"] == "image/gif" || $_FILES["IMAGE"]["type"] == "image/jpg")
+    && (mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/jpeg" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/png" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/gif"  || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/jpg")
+    && $_FILES["IMAGE"]["size"] < 5000000){
 
-        // create the thumbnail
-        $extension = '';
-        $original = '';
+        // thumbnail create
+
+        $extension = '.jpg';
         if ($_FILES["IMAGE"]["type"] == "image/jpeg") {
-            $extension = '.jpg';
+
             $original = imagecreatefromjpeg($_FILES["IMAGE"]["tmp_name"]);
 
-            // scale the original image so as to create the thumbnail
-            $temp_thumb = imagescale($original, 300, -1);
+            // resize the thumbnail pic
+            $thumbTemp = imagescale($original, 300, -1);
 
             //update the product thumbnail once successfully created as jpg and stored
-            if (imagejpeg($temp_thumb, "/var/www/html/images/thumbnails/" . $lastId . "_thumbnail.jpg")) {
+            if (imagejpeg($thumbTemp, "/var/www/html/images/thumbnails/" . $lastId . "_thumbnail.jpg")) {
                 $new_thumbnail = "./images/thumbnails/" . $lastId . "_thumbnail.jpg";
 
                 $sql = "UPDATE PRODUCTS SET THUMBNAIL=? WHERE PID=?;";
@@ -101,19 +109,29 @@ function ierg4210_prod_insert() {
                 $q->execute();
 
                 // destroy the temporary thumbnail
-                imagedestroy($temp_thumb);
+                imagedestroy($thumbTemp);
+
+
+                header('Location: admin.php#category-add-form');
+                exit();
             } else {
                 header('Content-Type: text/html; charset=utf-8');
                 echo 'Thumbnail creation failed. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
+                header('Location: admin.php#category-add-form');
                 exit();
             }
         }
 
         // Note: Take care of the permission of destination folder (hints: current user is apache)
-        if (move_uploaded_file($_FILES["file"]["tmp_name"], "/var/www/html/admin/lib/images/" . $lastId . ".jpg")) {
-            // redirect back to original page; you may comment it during debug
-            header('Location: /var/www/html/admin/admin.php');
+        if (move_uploaded_file($_FILES["IMAGE"]["tmp_name"], "/var/www/html/images/" . $lastId . $extension)) {
+            $new_image = "./images/" . $lastId . $extension;
+            $sql = "UPDATE PRODUCTS SET IMAGE=? WHERE PID=?;";
+            $q = $db->prepare($sql);
+            $q->bindParam(1, $new_image);
+            $q->bindParam(2, $lastId);
             $q->execute();
+
+            header('Location: admin.php#category-add-form');
             exit();
         }
     }
@@ -121,6 +139,7 @@ function ierg4210_prod_insert() {
     // To replace the content-type header which was json and output an error message
     header('Content-Type: text/html; charset=utf-8');
     echo 'Invalid file detected. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
+    header('Location: admin.php#category-add-form');
     exit();
 }
 
@@ -218,8 +237,15 @@ function ierg4210_prod_fetchAll(){
     if ($q->execute())
         return $q->fetchAll();
 }
-function ierg4210_prod_fetchOne(){}
-function ierg4210_prod_edit(){}
+function ierg4210_prod_fetchOne(){
+
+
+}
+function ierg4210_prod_edit(){
+
+
+
+}
 function ierg4210_prod_delete(){
     if (!preg_match('/^\d*$/', $_POST['PID']))
         throw new Exception("invalid-PID");

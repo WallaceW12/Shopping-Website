@@ -19,7 +19,7 @@ foreach ($catList as $value ){
 
 foreach ($prodList as $value ){
     $options_prod .= '<option value="'.$value["PID"].'"> '.$value["NAME"].' </option>';
-    print_r($options_prod);
+    //print_r($options_prod);
     // $options .= '<option value="'.$value["CID"].'"> '.$value["NAME"].' </option>';
 }
 
@@ -27,19 +27,32 @@ foreach ($prodList as $value ){
 
 <html>
     <fieldset>
-        <legend> New Product</legend>
-        <form id="prod_insert" method="POST" action="admin-process.php?action=prod_insert"
-        enctype="multipart/form-data">
+        <legend> ADD New Product</legend>
+        <form id="prod_insert" method="POST" action="admin-process.php?action=prod_insert" enctype="multipart/form-data">
             <label for="prod_cid"> Category *</label>
-            <div> <select id="prod_cid" name="cid"><?php echo $options_cat; ?></select></div>
+            <div> <select id="prod_cid" name="CID"><?php echo $options_cat; ?></select></div>
+
             <label for="prod_name"> Name *</label>
-            <div> <input id="prod_name" type="text" name="NAME" required="required" pattern="^[\w\-]+$"/></div>
+            <div>   <input type="text" name="NAME" id="name-new-product" pattern="^[\w\- ]+$" required></div>
+
             <label for="prod_price"> Price *</label>
-            <div> <input id="prod_price" type="text" name="price" required="required" pattern="^\d+\.?\d*$"/></div>
-            <label for="prod_desc"> Description *</label>
-            <div> <input id="prod_desc" type="text" name="description"/> </div>
+            <div> <input type="number" name="PRICE" step="any" id="price-new-product" pattern="^[\d\.]+$" required></div>
+
+            <label for="prod_desc"> Description *</label></br>
+            <textarea name="DESCRIPTION" id="description-add-product" cols="30" rows="10" required></textarea>
+            </br>
+
+            <label for="prod_inventory"> Inventory *</label>
+            <div> <input id="prod_inventory" type="text" name="INVENTORY" required="required"> </div>
+
             <label for="prod_image"> Image * </label>
-            <div> <input type="file" name="file" required="true" accept="image/jpeg"/> </div>
+            <div class="image-upload-field">
+                <div class="image-preview">
+                    <img src="" alt="">
+                    <div></div>
+                </div>
+                <div> <input type="file" name="IMAGE" required="true" accept="image/jpeg, image/png, image/gif, image/jpg"> </div>
+            </div>
             <input type="submit" value="Submit"/>
         </form>
     </fieldset>
@@ -68,22 +81,42 @@ foreach ($prodList as $value ){
         </form>
     </fieldset>
     <fieldset>
-        <legend>Category Delete Form </legend>
+        <legend>Edit Product Form </legend>
         <form method="POST" action="admin-process.php?action=cat_delete" enctype="multipart/form-data" onsubmit="return check_option(this)">
-            <label for="CID-delete">Choose a category to be Deleted &#42;</label>
+            <label for="PID-edit">Choose a product to be Edited &#42;</label>
             <select name="CID" id="CID-delete">
-                <?php echo $options_cat; ?>
-            </select>
+                <?php echo $options_prod; ?>
+            </select></br>
 
-            <div class="actions">
-                <input type="reset" value="Reset">
-                <input type="submit" value="Submit">
+            <label for="prod_name"> Name *</label>
+            <div>   <input type="text" name="NAME" id="name-new-product" pattern="^[\w\- ]+$" required></div>
+
+            <label for="prod_price"> Price *</label>
+            <div> <input type="number" name="PRICE" step="any" id="price-new-product" pattern="^[\d\.]+$" required></div>
+
+            <label for="prod_desc"> Description *</label></br>
+            <textarea name="DESCRIPTION" id="description-add-product" cols="30" rows="10" required></textarea>
+            </br>
+
+            <label for="prod_inventory"> Inventory *</label>
+            <div> <input id="prod_inventory" type="text" name="INVENTORY" required="required"> </div>
+
+            <label for="prod_image"> Image * </label>
+            <div class="image-upload-field">
+                <div class="image-preview">
+                    <img src="" alt="">
+                    <div></div>
+                </div>
+                <div> <input type="file" name="IMAGE" required="true" accept="image/jpeg, image/png, image/gif, image/jpg"> </div>
             </div>
+            <input type="submit" value="Submit"/>
         </form>
     </fieldset>
+
+
     <fieldset>
         <legend>Product Delete Form </legend>
-        <form method="POST" action="admin-process.php?action=prod_delete" enctype="multipart/form-data" onsubmit="return check_option(this)">
+        <form method="POST" action="admin-process.php?action=prod_delete" enctype="multipart/form-data" >
             <label for="CID-delete">Choose a Product to be Deleted &#42;</label>
             <select name="PID" id="PID-delete">
                 <?php echo $options_prod; ?>
