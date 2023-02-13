@@ -1,47 +1,45 @@
 <?php
 require __DIR__.'/admin/lib/db.inc.php';
-$cid = $_REQUEST["CID"];
+$cid = $_REQUEST['CID'];
 $categories = ierg4210_cat_fetchAll();
 $li_cat = '';
-$current_cat = '';
+
+$fetch_prod = '';
+
+$prod_box = '';
+
 
 foreach ($categories as $value_cat) {
     if ($value_cat["CID"] == $cid) {
-        $li_cat .= '<li class="selected"><a href="category.php?cid='.$value_cat["CID"].'"><span>'.$value_cat["NAME"].'</span></a></li>';
+
+        $li_cat .= '<li class="selected" ><a  class="category" href="category.php?cid='.$value_cat['CID'].'"><span>'.$value_cat["NAME"].'</span></a></li>';
         $current_cat = $value_cat["NAME"];
+
     } else {
-        $li_cat .= '<li><a href="category.php?cid='.$value_cat["CID"].'"><span>'.$value_cat["NAME"].'</span></a></li>';
+        $li_cat .= '<li><a  class="category" href="category.php?cid='.$value_cat['CID'].'"><span>'.$value_cat["NAME"].'</span></a></li>';
+        $current_cat_no =$value_cat["CID"];
     }
 }
 
-/*$products = ierg4210_prod_fetch_by_catid($cid);
-$div_prod = '';
-foreach ($products as $value_prod) {
 
 
-     /*
-                <li class="product_box">
-                  <a href="shop/red-imposter.html">
-                     <img src="shop/SUS.jpg" alt="" class="product-img">
-                     <h2 class="product-title">imposter Skin</h2>
-                     <span class="price">$5</span>
-                  </a>
-                  <!--box cart icon-->
-                  <i class='bx bx-cart-add'></i>
-                </li>
+$fetch_prod = ierg4210_prod_fetchCat($cid);
 
-    $div_prod .= '<li class="product_box">
-                    <a href="product.php?pid='.$value_prod["PID"].'">
-                        <img src="'.$value_prod["THUMBNAIL"].'" alt="" class="product-img">
-                          <h2 class="product-title">'.$value_prod["NAME"].'</h2>
-                            <span class="price">$'.$value_prod["PRICE"].'</span>           
-                       </a>
-                  <!--box cart icon-->
-                  <i class="bx bx-cart-add/"></i>
-                </li>';
+foreach ($fetch_prod as $value_prod) {
+        $prod_box .=
+            '<li class="product_box">
+                          <a href="product.php?pid=' . $value_prod["PID"] . '">
+                              <img src="' . $value_prod["IMAGE"] . '" alt="" class="product-img">
+                              <h2 class="product-title">' . $value_prod["NAME"] . '</h2>
+                              <span class="price">$' . $value_prod["PRICE"] . '</span>
+                          </a>
+                          <!--box cart icon-->
+                          <i class="bx bx-cart-add"></i>
+                      </li>';
+}
 
-}*/
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -108,7 +106,7 @@ foreach ($products as $value_prod) {
     <!--Nav menu>category>-->
     <section class="nav-menu">
 
-        <a href="home.html" class="nav-home">Home</a>
+        <a href="/home.php" class="nav-home">Home</a>
 
     </section>
 
@@ -123,14 +121,10 @@ foreach ($products as $value_prod) {
         <section class="Cat-menu">
             <h2 class="Category-title">Category</h2>
 
-            <ul>
-                <?php echo $li_cat; ?>
 
-            </ul>
-            <div class="selector">
-                <a href="#first">&lt;</a>
-                <a href="#last">&gt;</a>
-            </div>
+            <?php echo $li_cat; ?>
+
+
             <a href="shop/electronic.html" class="category">Electronic</a>
 
             <a href="shop/food.html" class="category">Food</a>
@@ -138,42 +132,18 @@ foreach ($products as $value_prod) {
 
         </section>
 
-        <?php
+         <?php
+
         //while($row = mysqli_fetch_assoc($all_prodcut)){
-        ?>
-        <li class="product_box">
-            <a href="shop/airpod.html">
-                <img src="shop/airpod.jpg" alt="" class="product-img">
-                <h2 class="product-title">AirPod</h2>
-                <span class="price">$25</span>
-            </a>
-            <!--box cart icon-->
-            <i class='bx bx-cart-add'></i>
-        </li>
-        <?php
+
         // }
+       // print_r($cid);
+        //echo($value_prod['CID'] );
+         print_r($cid);
+            echo $prod_box;
         ?>
 
-        <!--Box2-->
-        <li class="product_box">
-            <a href="shop/red-imposter.html">
-                <img src="shop/SUS.jpg" alt="" class="product-img">
-                <h2 class="product-title">imposter Skin</h2>
-                <span class="price">$5</span>
-            </a>
-            <!--box cart icon-->
-            <i class='bx bx-cart-add'></i>
-        </li>
-        <!--Box3-->
-        <li class="product_box">
-            <a href="shop/burger.html">
-                <img src="shop/burger.jpg" alt="" class="product-img">
-                <h2 class="product-title">Burger</h2>
-                <span class="price">$1.5</span>
-            </a>
-            <!--box cart icon-->
-            <i class='bx bx-cart-add'></i>
-        </li>
+
         <!--Box4-->
 
         <!--Box5-->

@@ -1,36 +1,10 @@
 <?php
 
-require __DIR__ . '/admin/lib/db.inc.php';
+require __DIR__ . './admin/lib/db.inc.php';
 
-$cat = ierg4210_cat_fetchAll();
-$li_cat = '';
-$prod_box ='';
-
-foreach ($cat as $ent_cat){
-
-$li_cat .= '<li class="selected" ><a  class="category" href="category.php?cid='.$ent_cat["CID"].'"><span>'.$ent_cat["NAME"].'</span></a></li>';
-
-}
-
-
-$fetch_prod = ierg4210_prod_fetchAll();
-
-foreach ($fetch_prod as $value_prod) {
-    $prod_box .=
-        '<li class="product_box">
-                          <a href="product.php?pid=' . $value_prod["PID"] . '">
-                              <img src="'. $value_prod["IMAGE"] .'" alt="" class="product-img">
-                              <h2 class="product-title">' . $value_prod["NAME"] . '</h2>
-                              <span class="price">$' . $value_prod["PRICE"] . '</span>
-                          </a>
-                          <!--box cart icon-->
-                          <i class="bx bx-cart-add"></i>
-                      </li>';
-
-
-    // $li_cat .= '<li class="selected" ><a  class="category" href="category.php?cid='.$value_cat["CID"].'"><span>'.$value_cat["NAME"].'</span></a></li>';
-
-}
+//require_once '';
+   //$sql = "SELECT * FROM product";
+   //$all_prodcut = $conn->query($sql);
 ?>
 
 
@@ -49,7 +23,7 @@ foreach ($fetch_prod as $value_prod) {
         
             <div class="nav container">
                
-               <a href="/home.php" class="logo">Shopping Sites</a>
+               <a href="/shop/home.php" class="logo">Shopping Sites</a>
                <!--Cart -->
                <div class="right-nav">
                   <a href="/admin/admin.php" class="logo">Admin</a>
@@ -61,7 +35,7 @@ foreach ($fetch_prod as $value_prod) {
                         <!--cart content-->
                      
                            <div class="cart-box">
-                              <img src="shop/airpod.jpg" alt="" class="cart-img">
+                              <img src="airpod.jpg" alt="" class="cart-img">
                               <div class="detail-box">
                                  <div class="cart-product-title">Airpod</div>
                                  <div class="cart-price">$25</div>
@@ -99,7 +73,7 @@ foreach ($fetch_prod as $value_prod) {
           <!--Nav menu>category>-->
             <section class="nav-menu">
 
-               <a href="/home.php" class="nav-home">Home</a>
+               <a href="home.html" class="nav-home">Home</a>
                
             </section>
 
@@ -114,26 +88,64 @@ foreach ($fetch_prod as $value_prod) {
                <section class="Cat-menu">
                   <h2 class="Category-title">Category</h2>
 
-
-                   <?php echo $li_cat; ?>
-
-
-                  <a href="shop/electronic.html" class="category">Electronic</a>
-
-                  <a href="shop/food.html" class="category">Food</a>
-                  <a href="shop/meme.html" class="category">MEME</a>
+                  <a href="electronic.html" class="category">Electronic</a>
+                  <a href="food.html" class="category">Food</a>
+                  <a href="meme.html" class="category">MEME</a>
                   
                </section>
 
                <?php
-                  echo $prod_box;
+                  //while($row = mysqli_fetch_assoc($all_prodcut)){
                ?>
+               <li class="product_box">
+                  <a href="airpod.html">
+                     <img src="airpod.jpg" alt="" class="product-img">
+                     <h2 class="product-title">AirPod</h2>
+                     <span class="price">$25</span>
+                  </a>
+                  <!--box cart icon-->
+                  <i class='bx bx-cart-add'></i> 
+                </li>
+               <?php
+               // }
+               ?>
+
+                <!--Box2-->
+                <li class="product_box">
+                  <a href="red-imposter.html">
+                     <img src="SUS.jpg" alt="" class="product-img">
+                     <h2 class="product-title">imposter Skin</h2>
+                     <span class="price">$5</span>
+                  </a>
+                  <!--box cart icon-->
+                  <i class='bx bx-cart-add'></i> 
+                </li>
+                <!--Box3-->
+                <li class="product_box">
+                  <a href="burger.html">
+                     <img src="burger.jpg" alt="" class="product-img">
+                     <h2 class="product-title">Burger</h2>
+                     <span class="price">$1.5</span>
+                  </a>
+                  <!--box cart icon-->
+                  <i class='bx bx-cart-add'></i> 
+                </li>
+               <!--Box4-->
+               
+               <!--Box5-->
+               
+               <!--Box6-->
+  
+               <!--Box7-->
+               
+               <!--Box8-->
+              
                </ul>
         
         </section>
 
         <footer>
-
+ 
         </footer>
 
      </body>

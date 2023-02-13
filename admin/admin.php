@@ -28,7 +28,7 @@ foreach ($prodList as $value ){
 <html>
     <fieldset>
         <legend> ADD New Product</legend>
-        <form id="prod_insert" method="POST" action="admin-process.php?action=prod_insert" enctype="multipart/form-data">
+        <form id="add_prod" method="POST" action="admin-process.php?action=prod_insert" enctype="multipart/form-data">
             <label for="prod_cid"> Category *</label>
             <div> <select id="prod_cid" name="CID"><?php echo $options_cat; ?></select></div>
 
@@ -82,14 +82,17 @@ foreach ($prodList as $value ){
     </fieldset>
     <fieldset>
         <legend>Edit Product Form </legend>
-        <form method="POST" action="admin-process.php?action=cat_delete" enctype="multipart/form-data" onsubmit="return check_option(this)">
+        <form method="POST" action="admin-process.php?action=prod_edit" enctype="multipart/form-data" onsubmit="return check_option(this)">
             <label for="PID-edit">Choose a product to be Edited &#42;</label>
             <select name="CID" id="CID-delete">
+                <?php echo $options_cat; ?>
+            </select></br>
+            <select name="PID" id="PID-delete">
                 <?php echo $options_prod; ?>
             </select></br>
-
             <label for="prod_name"> Name *</label>
-            <div>   <input type="text" name="NAME" id="name-new-product" pattern="^[\w\- ]+$" required></div>
+            <div>
+                 <input type="text" name="NAME" id="name-new-product" pattern="^[\w\- ]+$" required  >  </div>
 
             <label for="prod_price"> Price *</label>
             <div> <input type="number" name="PRICE" step="any" id="price-new-product" pattern="^[\d\.]+$" required></div>
