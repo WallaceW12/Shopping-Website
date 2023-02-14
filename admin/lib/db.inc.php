@@ -80,53 +80,60 @@ function ierg4210_prod_insert() {
     && ($_FILES["IMAGE"]["type"] == "image/jpeg" || $_FILES["IMAGE"]["type"] == "image/png" || $_FILES["IMAGE"]["type"] == "image/gif")
     && (mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/jpeg" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/png" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/gif" )
     && $_FILES["IMAGE"]["size"] < 5000000){
-/*
-        try{
-            $imgSrc = $_FILES["IMAGE"];
 
-            //getting the image dimensions
-            list($width, $height) = getimagesize($imgSrc);
 
-            //saving the image into memory (for manipulation with GD Library)
-            $myImage = imagecreatefromjpeg($imgSrc);
-
-            // calculating the part of the image to use for thumbnail
-            if ($width > $height) {
-                $y = 0;
-                $x = ($width - $height) / 2;
-                $smallestSide = $height;
+        function resize_image($file, $w, $h, $crop=FALSE) {
+            list($width, $height) = getimagesize($file);
+            $r = $width / $height;
+            if ($crop) {
+                if ($width > $height) {
+                    $width = ceil($width-($width*abs($r-$w/$h)));
+                } else {
+                    $height = ceil($height-($height*abs($r-$w/$h)));
+                }
+                $newwidth = $w;
+                $newheight = $h;
             } else {
-                $x = 0;
-                $y = ($height - $width) / 2;
-                $smallestSide = $width;
+                if ($w/$h > $r) {
+                    $newwidth = $h*$r;
+                    $newheight = $h;
+                } else {
+                    $newheight = $w/$r;
+                    $newwidth = $w;
+                }
             }
+            $src = imagecreatefromjpeg($file);
+            $dst = imagecreatetruecolor($newwidth, $newheight);
+            imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
 
-            // copying the part into thumbnail
-            $thumbSize = 100;
-            $thumb = imagecreatetruecolor($thumbSize, $thumbSize);
-            imagecopyresampled($thumb, $myImage, 0, 0, $x, $y, $thumbSize, $thumbSize, $smallestSide, $smallestSide);
-
-            //final output
-            //header('Content-type: image/jpeg');
-            imagejpeg($thumb);
-
-        }catch (Exception $e){
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
+            return $dst;
         }
-*/
+        $thumb = resize_image($_FILES["IMAGE"]["tmp_name"],300,100);
+
+        if(move_uploaded_file($thumb, "/var/www/html/images/thumbnails/" . $lastId . $img_type)){
+            $new_image = "./images/thumbnails/" . $lastId . $img_type;
+            $sql = "UPDATE PRODUCTS SET THUMBNAIL=? WHERE PID=?;";
+            $q = $db->prepare($sql);
+            $q->bindParam(1, $thumb);
+            $q->bindParam(2, $lastId);
+            $q->execute();
+            imagedestroy($thumb);
+        }
+
+
 
         // Note: Take care of the permission of destination folder (hints: current user is apache)
         if (move_uploaded_file($_FILES["IMAGE"]["tmp_name"], "/var/www/html/images/" . $lastId . $img_type)) {
+
             $new_image = "./images/" . $lastId . $img_type;
             $sql = "UPDATE PRODUCTS SET IMAGE=? WHERE PID=?;";
             $q = $db->prepare($sql);
             $q->bindParam(1, $new_image);
             $q->bindParam(2, $lastId);
             $q->execute();
-
-            header('Location: admin.php#category-add-form');
-            exit();
         }
+        // Note: Take care of the permission of destination folder (hints: current user is apache)
+
         header('Location: admin.php#category-add-form');
         exit();
 
@@ -254,9 +261,6 @@ function ierg4210_prod_fetchOne($pid){
     $q->bindParam(1, $pid);
     if ($q->execute())
         return $q->fetchAll();
-
-
-
 }
 
 
@@ -311,12 +315,6 @@ function ierg4210_prod_edit(){
         && ($_FILES["IMAGE"]["type"] == "image/jpeg" || $_FILES["IMAGE"]["type"] == "image/png" || $_FILES["IMAGE"]["type"] == "image/gif")
         && (mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/jpeg" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/png" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/gif" )
         && $_FILES["IMAGE"]["size"] < 5000000){
-
-
-       // $temp = imagecreatefromjpeg($_FILES["IMAGE"]["tmp_name"]);
-
-        // scale the original image so as to create the thumbnail
-       // $temp_thumb = imagescale($temp, 300, -1);
 
 
         $img_type = '.jpg';

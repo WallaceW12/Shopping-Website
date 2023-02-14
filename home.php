@@ -106,29 +106,22 @@ foreach ($fetch_prod as $value_prod) {
 
 
             
-            <h2 class="section-title">Shop Products</h2>
+
             <!--content-->
-            
+
+            <h2 class="section-title">Shop Products</h2>
             <ul class="shop-content">
-               <!--Box1-->
-               <section class="Cat-menu">
-                  <h2 class="Category-title">Category</h2>
+                <!--Box1-->
+                <section class="Cat-menu">
+                    <h2 class="Category-title">Category</h2>
+                    <?php echo $li_cat; ?>
+                </section>
 
+                    <?php
 
-                   <?php echo $li_cat; ?>
-
-
-                  <a href="shop/electronic.html" class="category">Electronic</a>
-
-                  <a href="shop/food.html" class="category">Food</a>
-                  <a href="shop/meme.html" class="category">MEME</a>
-                  
-               </section>
-
-               <?php
-                  echo $prod_box;
-               ?>
-               </ul>
+                    echo $prod_box;
+                    ?>
+            </ul>
         
         </section>
 

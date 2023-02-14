@@ -42,7 +42,7 @@ body{
     max-width: 1680px;
     margin: auto;
     width: 100%;
-    position: flex;
+    position: static;
 }
 section{
     padding: 2rem 0 2rem;
@@ -83,7 +83,20 @@ header{
     text-align: left;
 
 }
+.prod-menu{
+    position: fixed;
+    display: flex;
+    top: 80px;
+    width: 90%;
 
+
+
+    background-color: var(--base-color);
+    box-shadow: -2px 0 4px hsl(0 4% 15% / 10%);
+    padding: 50px 0;
+    border-radius: 5px;
+
+}
 .nav-menu{
     position: flex;
     width: 100%;
@@ -270,6 +283,7 @@ li > a {
 }
 
 .right-column {
+
     width: 45%;
     padding: 1vh;
     margin-top: 60px;

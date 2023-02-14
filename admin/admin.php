@@ -36,14 +36,14 @@ foreach ($prodList as $value ){
             <div>   <input type="text" name="NAME" id="name-new-product" pattern="^[\w\- ]+$" required></div>
 
             <label for="prod_price"> Price *</label>
-            <div> <input type="number" name="PRICE" step="any" id="price-new-product" pattern="^[\d\.]+$" required></div>
+            <div> <input type="number"  min="0" name="PRICE" step="any" id="price-new-product" pattern="^[\d\.]+$" required></div>
 
             <label for="prod_desc"> Description *</label></br>
             <textarea name="DESCRIPTION" id="description-add-product" cols="30" rows="10" required></textarea>
             </br>
 
             <label for="prod_inventory"> Inventory *</label>
-            <div> <input id="prod_inventory" type="text" name="INVENTORY" required="required"> </div>
+            <div> <input id="prod_inventory" type="text" pattern="^[\d\.]+$" name="INVENTORY" required="required"> </div>
 
             <label for="prod_image"> Image * </label>
             <div class="image-upload-field">
@@ -95,14 +95,14 @@ foreach ($prodList as $value ){
                  <input type="text" name="NAME" id="name-new-product" pattern="^[\w\- ]+$" required  >  </div>
 
             <label for="prod_price"> Price *</label>
-            <div> <input type="number" name="PRICE" step="any" id="price-new-product" pattern="^[\d\.]+$" required></div>
+            <div> <input type="number" min="0" name="PRICE" step="any" id="price-new-product" pattern="^[\d\.]+$" required></div>
 
             <label for="prod_desc"> Description *</label></br>
             <textarea name="DESCRIPTION" id="description-add-product" cols="30" rows="10" required></textarea>
             </br>
 
             <label for="prod_inventory"> Inventory *</label>
-            <div> <input id="prod_inventory" type="text" name="INVENTORY" required="required"> </div>
+            <div> <input id="prod_inventory" type="text" name="INVENTORY" pattern="^[\d\.]+$" required="required"> </div>
 
             <label for="prod_image"> Image * </label>
             <div class="image-upload-field">

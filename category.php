@@ -1,6 +1,6 @@
 <?php
 require __DIR__.'/admin/lib/db.inc.php';
-$cid = $_REQUEST['CID'];
+$cid = $_REQUEST["cid"];
 $categories = ierg4210_cat_fetchAll();
 $li_cat = '';
 
@@ -15,17 +15,17 @@ foreach ($categories as $value_cat) {
         $li_cat .= '<li class="selected" ><a  class="category" href="category.php?cid='.$value_cat['CID'].'"><span>'.$value_cat["NAME"].'</span></a></li>';
         $current_cat = $value_cat["NAME"];
 
+
     } else {
         $li_cat .= '<li><a  class="category" href="category.php?cid='.$value_cat['CID'].'"><span>'.$value_cat["NAME"].'</span></a></li>';
-        $current_cat_no =$value_cat["CID"];
+
     }
+
 }
 
-
-
 $fetch_prod = ierg4210_prod_fetchCat($cid);
-
 foreach ($fetch_prod as $value_prod) {
+
         $prod_box .=
             '<li class="product_box">
                           <a href="product.php?pid=' . $value_prod["PID"] . '">
@@ -45,7 +45,7 @@ foreach ($fetch_prod as $value_prod) {
 <html>
 <head>
     <meta name="viewport" content="width=device-width,initial-scale=1.0" charset="utf-8">
-    <link rel="stylesheet" href="shop/style.css">
+    <link rel="stylesheet" href="style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
 </head>
@@ -113,47 +113,21 @@ foreach ($fetch_prod as $value_prod) {
 
 
 
-    <h2 class="section-title">Shop Products</h2>
+
     <!--content-->
 
+    <h2 class="section-title">Shop Products</h2>
     <ul class="shop-content">
         <!--Box1-->
         <section class="Cat-menu">
             <h2 class="Category-title">Category</h2>
-
-
             <?php echo $li_cat; ?>
-
-
-            <a href="shop/electronic.html" class="category">Electronic</a>
-
-            <a href="shop/food.html" class="category">Food</a>
-            <a href="shop/meme.html" class="category">MEME</a>
-
         </section>
 
-         <?php
+        <?php
 
-        //while($row = mysqli_fetch_assoc($all_prodcut)){
-
-        // }
-       // print_r($cid);
-        //echo($value_prod['CID'] );
-         print_r($cid);
-            echo $prod_box;
+        echo $prod_box;
         ?>
-
-
-        <!--Box4-->
-
-        <!--Box5-->
-
-        <!--Box6-->
-
-        <!--Box7-->
-
-        <!--Box8-->
-
     </ul>
 
 </section>
