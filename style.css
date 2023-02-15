@@ -279,7 +279,7 @@ li > a {
 
 .left-column {
     width: 45%;
-    position: relative;
+    position: fixed;
 }
 
 .right-column {
@@ -290,7 +290,7 @@ li > a {
 }
 .left-column product-descrip-img {
     width: 120px;
-    position: absolute;
+    position: relative;
     left: 0;
     top: 0;
     opacity: 0;

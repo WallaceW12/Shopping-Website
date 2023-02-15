@@ -320,26 +320,76 @@ function ierg4210_prod_edit(){
 
         $file = $_FILES['IMAGE']['tmp_name'];
         list($width,$height)=getimagesize($file);
-        $nwidth=$width/4;
-        $nheight=$height/4;
-        header('Content-Type: image/jpeg');
-       // $newimage = imagecreatetruecolor(120, 20);
+        $nwidth=300;
+        $nheight=200;
+
         if($_FILES["IMAGE"]["type"] == "image/jpeg"){
 
-           //$source=imagecreatefromjpeg($file);
-           // imagecopyresized($newimage,$source,0,0,0,0,$nwidth,$nheight,$width,$height);
-            //imagejpeg($newimage);
-            if (move_uploaded_file($file, "/var/www/html/images/thumbnails/" . $pid . "_thumbnail.jpg") ) {
-                $new_image_path = "./images/thumbnails/" . $pid . "_thumbnail.jpg";
-                $sql = "UPDATE PRODUCTS SET THUMBNAIL=? WHERE PID=?;";
+            $source=imagecreatefromjpeg($file);
+
+            header('Content-Type: image/jpeg');
+            $temp_thumb = imagescale($source, 300, -1);
+
+            if(move_uploaded_file($file, "/var/www/html/images/" . $pid . ".jpg") ) {
+                $new_image_path = "./images/" . $pid . ".jpg";
+                $sql = "UPDATE PRODUCTS SET IMAGE=? WHERE PID=?;";
                 $q = $db->prepare($sql);
                 $q->bindParam(1, $new_image_path);
                 $q->bindParam(2, $pid);
                 $q->execute();
-                header('Location: admin.php#category-add-form');
-                exit();
+
+            }
+            if (imagejpeg($temp_thumb, "/var/www/html/images/thumbnails/" . $pid . "_thumbnail.jpg") ) {
+                $new_thumbnail_path = "./images/thumbnails/" . $pid . "_thumbnail.jpg";
+                $sql = "UPDATE PRODUCTS SET THUMBNAIL=? WHERE PID=?;";
+                $q = $db->prepare($sql);
+                $q->bindParam(1, $new_thumbnail_path);
+                $q->bindParam(2, $pid);
+                $q->execute();
+                imagedestroy($temp_thumb);
             }
 
+            header('Location: admin.php#category-add-form');
+            exit();
+        }else if($_FILES["IMAGE"]["type"] == "image/png"){
+
+            $source=imagecreatefromjpeg($file);
+
+            header('Content-Type: image/png');
+            $temp_thumb = imagescale($source, $nwidth, $nheight);
+
+
+            if (imagepng($temp_thumb, "/var/www/html/images/thumbnails/" . $pid . "_thumbnail.png") ) {
+                $new_thumbnail_path = "./images/thumbnails/" . $pid . "_thumbnail.png";
+                $sql = "UPDATE PRODUCTS SET THUMBNAIL=? WHERE PID=?;";
+                $q = $db->prepare($sql);
+                $q->bindParam(1, $new_thumbnail_path);
+                $q->bindParam(2, $pid);
+                $q->execute();
+                imagedestroy($temp_thumb);
+            }
+            header('Location: admin.php#category-add-form');
+            exit();
+        }
+        else if($_FILES["IMAGE"]["type"] == "image/gif"){
+
+            $source=imagecreatefromjpeg($file);
+
+            header('Content-Type: image/gif');
+            $temp_thumb = imagescale($source, $nwidth, $nheight);
+
+
+            if (imagegif($temp_thumb, "/var/www/html/images/thumbnails/" . $pid . "_thumbnail.gif") ) {
+                $new_thumbnail_path = "./images/thumbnails/" . $pid . "_thumbnail.gif";
+                $sql = "UPDATE PRODUCTS SET THUMBNAIL=? WHERE PID=?;";
+                $q = $db->prepare($sql);
+                $q->bindParam(1, $new_thumbnail_path);
+                $q->bindParam(2, $pid);
+                $q->execute();
+                imagedestroy($temp_thumb);
+            }
+            header('Location: admin.php#category-add-form');
+            exit();
         }
         /*
         if (move_uploaded_file($file, "/var/www/html/images/thumbnails/" . $pid . "_thumbnail.jpg")) {

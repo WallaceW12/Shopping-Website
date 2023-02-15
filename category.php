@@ -29,7 +29,7 @@ foreach ($fetch_prod as $value_prod) {
         $prod_box .=
             '<li class="product_box">
                           <a href="product.php?pid=' . $value_prod["PID"] . '">
-                              <img src="' . $value_prod["IMAGE"] . '" alt="" class="product-img">
+                              <img src="' . $value_prod["THUMBNAIL"] . '" alt="" class="product-img">
                               <h2 class="product-title">' . $value_prod["NAME"] . '</h2>
                               <span class="price">$' . $value_prod["PRICE"] . '</span>
                           </a>
