@@ -98,7 +98,7 @@ header{
 
 }
 .nav-menu{
-    position: flex;
+    position: static;
     width: 100%;
 }
 

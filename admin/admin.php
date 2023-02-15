@@ -110,7 +110,7 @@ foreach ($prodList as $value ){
                     <img src="" alt="">
                     <div></div>
                 </div>
-                <div> <input type="file" name="IMAGE" required="true" accept="image/jpeg, image/png, image/gif, image/jpg"> </div>
+                <div> <input type="file" name="IMAGE" required="true" accept="image/jpeg, image/png, image/gif"> </div>
             </div>
             <input type="submit" value="Submit"/>
         </form>
