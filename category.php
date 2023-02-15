@@ -3,7 +3,7 @@ require __DIR__.'/admin/lib/db.inc.php';
 $cid = $_REQUEST["cid"];
 $categories = ierg4210_cat_fetchAll();
 $li_cat = '';
-
+$current_cat='';
 $fetch_prod = '';
 
 $prod_box = '';
@@ -106,7 +106,9 @@ foreach ($fetch_prod as $value_prod) {
     <!--Nav menu>category>-->
     <section class="nav-menu">
 
-        <a href="/home.php" class="nav-home">Home</a>
+        <a href="home.php" class="nav-home">Home</a>
+        >
+        <?php echo '<a href="category.php?cid='.$cid.'">'.$current_cat.'</a>' ?>
 
     </section>
 
@@ -116,7 +118,7 @@ foreach ($fetch_prod as $value_prod) {
 
     <!--content-->
 
-    <h2 class="section-title">Shop Products</h2>
+    <h2 class="section-title"> <?php echo $current_cat; ?></h2>
     <ul class="shop-content">
         <!--Box1-->
         <section class="Cat-menu">

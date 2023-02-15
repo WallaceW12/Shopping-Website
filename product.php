@@ -3,28 +3,33 @@
 require __DIR__ . '/admin/lib/db.inc.php';
 
 $cat = ierg4210_cat_fetchAll();
+$cat_name ='';
 $pid = $_REQUEST["pid"];
 $li_cat = '';
 $prod_box ='';
 
-foreach ($cat as $ent_cat){
-
-    $li_cat .= '<li class="selected" ><a  class="category" href="category.php?cid='.$ent_cat["CID"].'"><span>'.$ent_cat["NAME"].'</span></a></li>';
-
-}
 
 $fetch_prod = ierg4210_prod_fetchOne($pid);
 foreach ($fetch_prod as $value) {
 
 }
+foreach($cat as $cat_list){
+    if($value["CID"] == $cat_list['CID']){
+        $cat_name = $cat_list['NAME'];
+    }
+}
+
+foreach ($cat as $ent_cat){
+    if ($ent_cat["CID"] == $fetch_prod["CID"]) {
+    $li_cat .= '<li class="selected" ><a  class="category" href="category.php?cid='.$ent_cat["CID"].'"><span>'.$ent_cat["NAME"].'</span></a></li>';
+
+        $cat_name = $cat["NAME"];
+    } else {
+        $li_cat .= '<li><a class="category" href="category.php?cid='.$ent_cat["CID"].'"><span>'.$ent_cat["NAME"].'</span></a></li>';
+    }
+}
+
 ?>
-<!--Box1-->
-
-$fetch_prod = ierg4210_prod_fetchOne($pid);
-
-?>
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -90,7 +95,11 @@ $fetch_prod = ierg4210_prod_fetchOne($pid);
     <!--Nav menu>category>-->
     <section class="nav-menu">
 
-        <a href="/home.php" class="nav-home">Home</a>
+        <a href="home.php" class="nav-home">Home</a>
+        >
+        <?php echo '<a href="category.php?cid='.$value["CID"].'">'.$cat_name.'</a>' ?>
+        >
+        <?php echo '<a href="product.php?pid='.$value["PID"].'">'.$value["NAME"].'</a>' ?>
 
     </section>
 

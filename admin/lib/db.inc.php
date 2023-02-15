@@ -65,8 +65,8 @@ function ierg4210_prod_insert() {
     $q->bindParam(1, $cid);
     $q->bindParam(2, $name);
     $q->bindParam(3, $price);
-    $q->bindParam(4, $desc);
-    $q->bindParam(5, $inventory);
+    $q->bindParam(4, $inventory);
+    $q->bindParam(5, $desc);
     $q->bindParam(6, $default_image);
     $q->bindParam(7, $default_thumbnail);
 
@@ -74,76 +74,117 @@ function ierg4210_prod_insert() {
     
     $lastId = $db->lastInsertId();
 
-    $img_type = '.jpg';
-    // Copy the uploaded file to a folder which can be publicly accessible at incl/img/[pid].jpg
+
     if ($_FILES["IMAGE"]["error"] == 0
-    && ($_FILES["IMAGE"]["type"] == "image/jpeg" || $_FILES["IMAGE"]["type"] == "image/png" || $_FILES["IMAGE"]["type"] == "image/gif")
-    && (mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/jpeg" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/png" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/gif" )
-    && $_FILES["IMAGE"]["size"] < 5000000){
+        && ($_FILES["IMAGE"]["type"] == "image/jpeg" || $_FILES["IMAGE"]["type"] == "image/png" || $_FILES["IMAGE"]["type"] == "image/gif")
+        && (mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/jpeg" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/png" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/gif" )
+        && $_FILES["IMAGE"]["size"] < 40000000) {
 
-/*
-        function resize_image($file, $w, $h, $crop=FALSE) {
-            list($width, $height) = getimagesize($file);
-            $r = $width / $height;
-            if ($crop) {
-                if ($width > $height) {
-                    $width = ceil($width-($width*abs($r-$w/$h)));
-                } else {
-                    $height = ceil($height-($height*abs($r-$w/$h)));
-                }
-                $newwidth = $w;
-                $newheight = $h;
-            } else {
-                if ($w/$h > $r) {
-                    $newwidth = $h*$r;
-                    $newheight = $h;
-                } else {
-                    $newheight = $w/$r;
-                    $newwidth = $w;
-                }
+
+
+        $file = $_FILES['IMAGE']['tmp_name'];
+        list($width,$height)=getimagesize($file);
+        $nwidth=300;
+        $nheight=200;
+
+        if($_FILES["IMAGE"]["type"] == "image/jpeg"){
+
+            $source=imagecreatefromjpeg($file);
+
+            header('Content-Type: image/jpeg');
+            $temp_thumb = imagescale($source, 300, $nheight);
+
+            if(move_uploaded_file($file, "/var/www/html/images/" . $lastId . ".jpg") ) {
+                $new_image_path = "./images/" . $lastId . ".jpg";
+                $sql = "UPDATE PRODUCTS SET IMAGE=? WHERE PID=?;";
+                $q = $db->prepare($sql);
+                $q->bindParam(1, $new_image_path);
+                $q->bindParam(2, $lastId);
+                $q->execute();
+
             }
-            $src = imagecreatefromjpeg($file);
-            $dst = imagecreatetruecolor($newwidth, $newheight);
-            imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+            if (imagejpeg($temp_thumb, "/var/www/html/images/thumbnails/" . $lastId . "_thumbnail.jpg") ) {
+                $new_thumbnail_path = "./images/thumbnails/" . $lastId . "_thumbnail.jpg";
+                $sql = "UPDATE PRODUCTS SET THUMBNAIL=? WHERE PID=?;";
+                $q = $db->prepare($sql);
+                $q->bindParam(1, $new_thumbnail_path);
+                $q->bindParam(2, $lastId);
+                $q->execute();
+                imagedestroy($temp_thumb);
+            }
 
-            return $dst;
+            header('Location: admin.php#category-add-form');
+            exit();
         }
-        $thumb = resize_image(,300,100);
+        else if($_FILES["IMAGE"]["type"] == "image/png"){
 
-        if(move_uploaded_file($thumb, "/var/www/html/images/thumbnails/" . $lastId . $img_type)){
-            $new_image = "./images/thumbnails/" . $lastId . $img_type;
-            $sql = "UPDATE PRODUCTS SET THUMBNAIL=? WHERE PID=?;";
-            $q = $db->prepare($sql);
-            $q->bindParam(1, $thumb);
-            $q->bindParam(2, $lastId);
-            $q->execute();
-            imagedestroy($thumb);
+            $source=imagecreatefrompng($file);
+
+            header('Content-Type: image/png');
+            $temp_thumb = imagescale($source, $nwidth, $nheight);
+
+            if(move_uploaded_file($file, "/var/www/html/images/" . $lastId . ".png") ) {
+                $new_image_path = "./images/" . $lastId . ".png";
+                $sql = "UPDATE PRODUCTS SET IMAGE=? WHERE PID=?;";
+                $q = $db->prepare($sql);
+                $q->bindParam(1, $new_image_path);
+                $q->bindParam(2, $lastId);
+                $q->execute();
+
+            }
+            if (imagepng($temp_thumb, "/var/www/html/images/thumbnails/" . $lastId . "_thumbnail.png") ) {
+                $new_thumbnail_path = "./images/thumbnails/" . $lastId . "_thumbnail.png";
+                $sql = "UPDATE PRODUCTS SET THUMBNAIL=? WHERE PID=?;";
+                $q = $db->prepare($sql);
+                $q->bindParam(1, $new_thumbnail_path);
+                $q->bindParam(2, $lastId);
+                $q->execute();
+                imagedestroy($temp_thumb);
+            }
+            header('Location: admin.php#category-add-form');
+            exit();
         }
+        else if($_FILES["IMAGE"]["type"] == "image/gif") {
+
+            $source = imagecreatefromgif($file);
+
+            header('Content-Type: image/gif');
+            $temp_thumb = imagescale($source, $nwidth, $nheight);
 
 
-*/
-        // Note: Take care of the permission of destination folder (hints: current user is apache)
-        if (move_uploaded_file($_FILES["IMAGE"]["tmp_name"], "/var/www/html/images/" . $lastId . $img_type)) {
+            if (move_uploaded_file($file, "/var/www/html/images/" . $lastId . ".gif")) {
+                $new_image_path = "./images/" . $lastId . ".gif";
+                $sql = "UPDATE PRODUCTS SET IMAGE=? WHERE PID=?;";
+                $q = $db->prepare($sql);
+                $q->bindParam(1, $new_image_path);
+                $q->bindParam(2, $lastId);
+                $q->execute();
 
-            $new_image = "./images/" . $lastId . $img_type;
-            $sql = "UPDATE PRODUCTS SET IMAGE=? WHERE PID=?;";
-            $q = $db->prepare($sql);
-            $q->bindParam(1, $new_image);
-            $q->bindParam(2, $lastId);
-            $q->execute();
+            }
+            if (imagegif($temp_thumb, "/var/www/html/images/thumbnails/" . $lastId . "_thumbnail.gif")) {
+                $new_thumbnail_path = "./images/thumbnails/" . $lastId . "_thumbnail.gif";
+                $sql = "UPDATE PRODUCTS SET THUMBNAIL=? WHERE PID=?;";
+                $q = $db->prepare($sql);
+                $q->bindParam(1, $new_thumbnail_path);
+                $q->bindParam(2, $lastId);
+                $q->execute();
+
+            }
+            imagedestroy($temp_thumb);
+            header('Location: admin.php#category-add-form');
+            exit();
+        }else{
+            header('Location: admin.php#category-add-form');
+            echo 'Invalid file detected. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
+            exit();
+
         }
-        // Note: Take care of the permission of destination folder (hints: current user is apache)
-
-        header('Location: admin.php#category-add-form');
-        exit();
-
     }
-    // Only an invalid file will result in the execution below
-    // To replace the content-type header which was json and output an error message
     header('Content-Type: text/html; charset=utf-8');
-
-    header('Location: admin.php');
+    header('Location: admin.php#category-add-form');
+    echo 'Invalid file detected. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
     exit();
+
 }
 
 // TODO: add other functions here to make the whole application complete
@@ -314,7 +355,7 @@ function ierg4210_prod_edit(){
     if ($_FILES["IMAGE"]["error"] == 0
         && ($_FILES["IMAGE"]["type"] == "image/jpeg" || $_FILES["IMAGE"]["type"] == "image/png" || $_FILES["IMAGE"]["type"] == "image/gif")
         && (mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/jpeg" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/png" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/gif" )
-        && $_FILES["IMAGE"]["size"] < 5000000) {
+        && $_FILES["IMAGE"]["size"] < 40000000) {
 
 
 
@@ -328,7 +369,7 @@ function ierg4210_prod_edit(){
             $source=imagecreatefromjpeg($file);
 
             header('Content-Type: image/jpeg');
-            $temp_thumb = imagescale($source, 300, -1);
+            $temp_thumb = imagescale($source, 300, $nheight);
 
             if(move_uploaded_file($file, "/var/www/html/images/" . $pid . ".jpg") ) {
                 $new_image_path = "./images/" . $pid . ".jpg";
@@ -351,14 +392,23 @@ function ierg4210_prod_edit(){
 
             header('Location: admin.php#category-add-form');
             exit();
-        }else if($_FILES["IMAGE"]["type"] == "image/png"){
+        }
+        else if($_FILES["IMAGE"]["type"] == "image/png"){
 
-            $source=imagecreatefromjpeg($file);
+            $source=imagecreatefrompng($file);
 
             header('Content-Type: image/png');
             $temp_thumb = imagescale($source, $nwidth, $nheight);
 
+            if(move_uploaded_file($file, "/var/www/html/images/" . $pid . ".png") ) {
+                $new_image_path = "./images/" . $pid . ".png";
+                $sql = "UPDATE PRODUCTS SET IMAGE=? WHERE PID=?;";
+                $q = $db->prepare($sql);
+                $q->bindParam(1, $new_image_path);
+                $q->bindParam(2, $pid);
+                $q->execute();
 
+            }
             if (imagepng($temp_thumb, "/var/www/html/images/thumbnails/" . $pid . "_thumbnail.png") ) {
                 $new_thumbnail_path = "./images/thumbnails/" . $pid . "_thumbnail.png";
                 $sql = "UPDATE PRODUCTS SET THUMBNAIL=? WHERE PID=?;";
@@ -371,75 +421,45 @@ function ierg4210_prod_edit(){
             header('Location: admin.php#category-add-form');
             exit();
         }
-        else if($_FILES["IMAGE"]["type"] == "image/gif"){
+        else if($_FILES["IMAGE"]["type"] == "image/gif") {
 
-            $source=imagecreatefromjpeg($file);
+            $source = imagecreatefromgif($file);
 
             header('Content-Type: image/gif');
             $temp_thumb = imagescale($source, $nwidth, $nheight);
 
 
-            if (imagegif($temp_thumb, "/var/www/html/images/thumbnails/" . $pid . "_thumbnail.gif") ) {
+            if (move_uploaded_file($file, "/var/www/html/images/" . $pid . ".gif")) {
+                $new_image_path = "./images/" . $pid . ".gif";
+                $sql = "UPDATE PRODUCTS SET IMAGE=? WHERE PID=?;";
+                $q = $db->prepare($sql);
+                $q->bindParam(1, $new_image_path);
+                $q->bindParam(2, $pid);
+                $q->execute();
+
+            }
+             if (imagegif($temp_thumb, "/var/www/html/images/thumbnails/" . $pid . "_thumbnail.gif")) {
                 $new_thumbnail_path = "./images/thumbnails/" . $pid . "_thumbnail.gif";
                 $sql = "UPDATE PRODUCTS SET THUMBNAIL=? WHERE PID=?;";
                 $q = $db->prepare($sql);
                 $q->bindParam(1, $new_thumbnail_path);
                 $q->bindParam(2, $pid);
                 $q->execute();
-                imagedestroy($temp_thumb);
+
             }
+            imagedestroy($temp_thumb);
             header('Location: admin.php#category-add-form');
             exit();
-        }
-        /*
-        if (move_uploaded_file($file, "/var/www/html/images/thumbnails/" . $pid . "_thumbnail.jpg")) {
-            $new_image_path = "./images/thumbnails/" . $pid . "_thumbnail.jpg";
-            $sql = "UPDATE PRODUCTS SET THUMBNAIL=? WHERE PID=?;";
-            $q = $db->prepare($sql);
-            $q->bindParam(1, $new_image_path);
-            $q->bindParam(2, $pid);
-            $q->execute();
+        }else{
             header('Location: admin.php#category-add-form');
-            exit();
-        }*/
-            /*
-            if($_FILES["IMAGE"]["type"]=='image/jpeg'){
-                console.log(1);
-                $source=imagecreatefromjpeg($file);
-                imagecopyresized($newimage,$source,0,0,0,0,$nwidth,$nheight,$width,$height);
-                $file_name='.jpg';
-                imagejpeg($newimage);// 'images/thumbnails/'.$file_name
-
-            }elseif($_FILES["IMAGE"]["type"]=='image/png'){
-                $source=imagecreatefrompng($file);
-                imagecopyresized($newimage,$source,0,0,0,0,$nwidth,$nheight,$width,$height);
-                $file_name=$pid.'.png';
-                imagepng($newimage,'images/thumbnails/'.$file_name);
-            }elseif($_FILES["IMAGE"]["type"]=='image/gif'){
-                $source=imagecreatefromgif($file);
-                imagecopyresized($newimage,$source,0,0,0,0,$nwidth,$nheight,$width,$height);
-                $file_name=$pid.'.gif';
-                imagegif($newimage,'images/thumbnails/'.$file_name);
-
-            }else{
-                echo "Please select only jpg, png and gif image";
-            }
-
-            // Note: Take care of the permission of destination folder (hints: current user is apache)
-
-            header('Location: admin.php#category-add-form');
+            echo 'Invalid file detected. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
             exit();
 
         }
-        // Only an invalid file will result in the execution below
-        // To replace the content-type header which was json and output an error message
-
-    */
-
     }
     header('Content-Type: text/html; charset=utf-8');
     header('Location: admin.php#category-add-form');
-  //  echo 'Invalid file detected. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
+    echo 'Invalid file detected. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
     exit();
 
 

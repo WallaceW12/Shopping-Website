@@ -48,8 +48,9 @@ section{
     padding: 2rem 0 2rem;
 }
 header{
-    position: fixed;
 
+    z-index: 10;
+    position:sticky;
     top: 0;
     left: 0;
     width: 100%;
@@ -98,7 +99,7 @@ header{
 
 }
 .nav-menu{
-    position: static;
+    position: flex;
     width: 100%;
 }
 
@@ -239,7 +240,7 @@ li > a {
 
 }
 .product_box:hover{
-    position: flex;
+    position:relative;
     padding: 10px;
     border: 1px solid var(--text-color);
 
@@ -247,7 +248,7 @@ li > a {
 .product-img{
     position: flex;
     width: 100%;
-    height: auto;
+    height: 200px;
     margin-bottom: 0.5rem;
 }
 /*Shop Content*/
@@ -279,21 +280,24 @@ li > a {
 
 .left-column {
     width: 45%;
-    position: fixed;
+
+    position: relative;
 }
 
 .right-column {
 
-    width: 45%;
+    width: 55%;
     padding: 1vh;
     margin-top: 60px;
 }
+
 .left-column product-descrip-img {
     width: 120px;
-    position: relative;
+    position: static;
     left: 0;
     top: 0;
     opacity: 0;
+
     transition: all 0.3s ease;
 }
 
