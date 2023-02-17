@@ -104,7 +104,7 @@ header{
 .nav{
 
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     padding: 20px 0;
 }
 .logo {
@@ -166,7 +166,7 @@ li > a {
     align-items: center ;
     gap: 1rem;
     margin-top: 1rem;
-    display: flex;
+    position: relative;
 }
 .detail-box{
     display: grid;
@@ -232,7 +232,7 @@ li > a {
 
 .product_box{
 
-    display: flex;
+    position: relative;
     width: 250px;
     background-size: cover;
 
@@ -244,7 +244,7 @@ li > a {
 
 }
 .product-img{
-    display: flex;
+    position: relative;
     width: 100%;
     height: 200px;
     margin-bottom: 0.5rem;
@@ -256,7 +256,7 @@ li > a {
     gap: 1.5rem;
 }
 .bx-cart-add{
-    display:flex;
+    position:relative;
     background: var(--bg-color);
     color: white;
     padding: 10px;

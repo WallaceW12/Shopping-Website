@@ -113,7 +113,7 @@ function ierg4210_prod_insert() {
                 imagedestroy($temp_thumb);
             }
 
-            header('Location: admin.php#category-add-form');
+            header('Location: admin.php');
             exit();
         }
         else if($_FILES["IMAGE"]["type"] == "image/png"){
@@ -141,7 +141,7 @@ function ierg4210_prod_insert() {
                 $q->execute();
                 imagedestroy($temp_thumb);
             }
-            header('Location: admin.php#category-add-form');
+            header('Location: admin.php');
             exit();
         }
         else if($_FILES["IMAGE"]["type"] == "image/gif") {
@@ -254,7 +254,7 @@ function ierg4210_cat_delete(){
     $q->bindParam(1, $cid);
 
     $q->execute();
-    header('Location: admin.php#category-add-form');
+    header('Location: admin.php');
     exit();
 }
 
@@ -272,6 +272,8 @@ function ierg4210_prod_delete_by_cid($cid){
 
     $q->bindParam(1, $cid);
     $q->execute();
+
+
 
 }
 function ierg4210_prod_fetchAll(){
@@ -355,7 +357,7 @@ function ierg4210_prod_edit(){
     if ($_FILES["IMAGE"]["error"] == 0
         && ($_FILES["IMAGE"]["type"] == "image/jpeg" || $_FILES["IMAGE"]["type"] == "image/png" || $_FILES["IMAGE"]["type"] == "image/gif")
         && (mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/jpeg" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/png" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/gif" )
-        && $_FILES["IMAGE"]["size"] < 40000000) {
+        && $_FILES["IMAGE"]["size"] <= 5000000) {
 
 
 
@@ -390,7 +392,7 @@ function ierg4210_prod_edit(){
                 imagedestroy($temp_thumb);
             }
 
-            header('Location: admin.php#category-add-form');
+            header('Location: admin.php');
             exit();
         }
         else if($_FILES["IMAGE"]["type"] == "image/png"){
@@ -418,7 +420,7 @@ function ierg4210_prod_edit(){
                 $q->execute();
                 imagedestroy($temp_thumb);
             }
-            header('Location: admin.php#category-add-form');
+            header('Location: admin.php');
             exit();
         }
         else if($_FILES["IMAGE"]["type"] == "image/gif") {
@@ -448,17 +450,17 @@ function ierg4210_prod_edit(){
 
             }
             imagedestroy($temp_thumb);
-            header('Location: admin.php#category-add-form');
+            header('Location: admin.php');
             exit();
         }else{
-            header('Location: admin.php#category-add-form');
+            header('Location: admin.php');
             echo 'Invalid file detected. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
             exit();
 
         }
     }
     header('Content-Type: text/html; charset=utf-8');
-    header('Location: admin.php#category-add-form');
+    header('Location: admin.php');
     echo 'Invalid file detected. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
     exit();
 
@@ -481,7 +483,9 @@ function ierg4210_prod_delete(){
     $q->execute();
 
     $lastId = $db->lastInsertId();
-    header('Location: admin.php#category-add-form');
+
+
+    header('Location: admin.php');
     exit();
 
 }
