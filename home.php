@@ -14,7 +14,7 @@ $li_cat .= '<li class="selected" ><a  class="category" href="category.php?cid='.
 
 
 $fetch_prod = ierg4210_prod_fetchAll();
-
+$count = 0;
 foreach ($fetch_prod as $value_prod) {
     $prod_box .=
         '<li class="product_box">
@@ -24,10 +24,10 @@ foreach ($fetch_prod as $value_prod) {
                               <span class="price">$' . $value_prod["PRICE"] . '</span>
                           </a>
                           <!--box cart icon-->
-                          <i class="bx bx-cart-add"></i>
+                         <i class="bx bx-cart-add" counter='.$count.' pid='.$value_prod["PID"].' onclick="addToCartClicked(event, this)";></i>
                       </li>';
 
-
+    $count++;
     // $li_cat .= '<li class="selected" ><a  class="category" href="category.php?cid='.$value_cat["CID"].'"><span>'.$value_cat["NAME"].'</span></a></li>';
 
 }
@@ -40,7 +40,7 @@ foreach ($fetch_prod as $value_prod) {
         <meta name="viewport" content="width=device-width,initial-scale=1.0" charset="utf-8">
          <link rel="stylesheet" href="/css/style.css?v=<?php echo time(); ?>">
         <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
+         <script type="text/javascript" src="/js/cart.js"> </script>
      </head>
      <body>
          <!--header -->
@@ -53,34 +53,28 @@ foreach ($fetch_prod as $value_prod) {
                <!--Cart -->
                <div class="right-nav">
                   <a href="/admin/admin.php" class="logo">Admin</a>
-                  
-                  <i class='bx bx-cart' class = "logo" id="cart-icon">
+
+                  <i class='bx bx-cart' class = "logo" id="cart-icon" onclick="">
                   
                      <div class="cart">
                         <h2 class="cart-title">Your Cart</h2>
                         <!--cart content-->
-                     
-                           <div class="cart-box">
-                              <img src="shop/airpod.jpg" alt="" class="cart-img">
-                              <div class="detail-box">
-                                 <div class="cart-product-title">Airpod</div>
-                                 <div class="cart-price">$25</div>
-                                 <div class="cart-quantity"></div>
-                                 <input type="number" min="0" value="1" class="cart-quantity">
-                              </div>
-                              <!--Remove-->
-                              <i class='bx bx-trash remove-item'></i>
-                           </div>
-                        
+
+
+                         <div class="cart-list">
+
+
+                         </div>
+
                            <div class="total">
-                              <div class="total-title">Total $25</div>
-                              <div class="totalprice"></div>
+                              <div class="total-title"></div>
+                              <div class="total-price">Total $25</div>
                            </div>
                            <!--Purchase-->
                            <button type="button" class="buy-button">Purchase</button>
                         </div>
                   
-                  </i> 
+                  </i>
                </div>
                     <!--horizontal Nav-->
             </div>

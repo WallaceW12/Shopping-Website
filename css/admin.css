@@ -19,9 +19,12 @@
 }
 
 .form-container{
-
+    margin-left: 36.5%;
+    margin-right:36.5%;
+    width: 100%;
+    display: block;
+    text-align: center;
     gap: 2rem;
-    margin: 2rem 5% 0 5%;
     color: var(--text-color);
 }
 input[type=button], input[type=submit], input[type=reset] {
@@ -29,7 +32,7 @@ input[type=button], input[type=submit], input[type=reset] {
     border: none;
     color: white;
     padding: 16px 32px;
-    align-items: end;
+    align-items: center;
     text-decoration: none;
     margin: 4px 2px;
     cursor: pointer;
@@ -44,7 +47,7 @@ input[type=button], input[type=submit], input[type=reset] {
     border-style: solid ;
     border-radius: 4px;
 }
-.text{
+.form-container .text{
      box-sizing: border-box;
      display: block;
      width: 100%;
@@ -56,4 +59,49 @@ input[type=button], input[type=submit], input[type=reset] {
 
 
 }
+.drop-zone{
+    width: auto;
+    height: 450px;
+    border: 2px dotted black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
+}
+
+.drop-zone img {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.image-drag-and-drop {
+    background-color: var(--base-color);
+    align-content: center;
+    border: #86939E 5px dashed;
+    width: auto;
+    height: auto;
+    margin: auto;
+
+}
+#drop-text{
+
+}
+#upload_button{
+    position: center;
+}
+input[type=text] {
+    transition: width 0.4s ease-in-out;
+
+}
+
+input[type=text]:focus {
+    width: auto;
+}
+input[type=text].ng-invalid {
+    background-color:pink;
+}
+input[type=text].ng-invalid {
+    background-color:lightgreen;
+}

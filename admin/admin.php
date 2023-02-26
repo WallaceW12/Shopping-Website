@@ -54,6 +54,7 @@ foreach ($prodList as $value ){
     </header>
 
     <div class="form-container">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
         <fieldset class="form-fill"　id="add-product-form">
             <legend> ADD New Product</legend>
             <form id="add_prod" method="POST" action="admin-process.php?action=prod_insert" enctype="multipart/form-data">
@@ -74,13 +75,20 @@ foreach ($prodList as $value ){
                 <div> <input id="prod_inventory" type="text" pattern="^[\d\.]+$" name="INVENTORY" required="required"> </div>
 
                 <label for="prod_image"> Image * </label>
-                <div class="image-upload-field">
-                    <div class="image-preview">
-                        <img src="" alt="">
-                        <div></div>
-                    </div>
-                    <div> <input type="file" name="IMAGE" required="true" accept="image/jpeg, image/png, image/gif, image/jpg"> </div>
-                </div>
+
+
+
+
+                        <div class="drop-zone">
+                            <img class="image_uploaded_add" src="" alt="">
+                            <p class="drag-and-drop_p">Drop file or click to upload</p>
+                            <input class ="upload_button" type="file" name="IMAGE" hidden required="true" accept="image/jpeg, image/png, image/gif">
+
+                        </div>
+
+
+
+
                 <input type="submit" value="Submit"/>
             </form>
         </fieldset>
@@ -146,13 +154,14 @@ foreach ($prodList as $value ){
                 <div> <input id="prod_inventory" type="text" name="INVENTORY" pattern="^[\d\.]+$" required="required"> </div>
 
                 <label for="prod_image"> Image * </label>
-                <div class="image-upload-field">
-                    <div class="image-preview">
-                        <img src="" alt="">
-                        <div></div>
-                    </div>
-                    <div> <input type="file" name="IMAGE" required="true" accept="image/jpeg, image/png, image/gif"> </div>
+
+                <div class="drop-zone">
+                    <img class="image_uploaded_add" src="" alt="">
+                    <p class="drag-and-drop_p">Drop file or click to upload</p>
+                    <input class ="upload_button" type="file" name="IMAGE" hidden required="true" accept="image/jpeg, image/png, image/gif">
+                    <script type="text/javascript" src="/js/drag-and-drop.js"> </script>
                 </div>
+
                 <input type="submit" value="Submit"/>
             </form>
         </fieldset>
