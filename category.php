@@ -5,7 +5,7 @@ $categories = ierg4210_cat_fetchAll();
 $li_cat = '';
 $current_cat='';
 $fetch_prod = '';
-
+$count = 0;
 $prod_box = '';
 
 
@@ -26,15 +26,15 @@ foreach ($categories as $value_cat) {
 $fetch_prod = ierg4210_prod_fetchCat($cid);
 foreach ($fetch_prod as $value_prod) {
 
-        $prod_box .=
-            '<li class="product_box">
+    $prod_box .=
+        '<li class="product_box" >
                           <a href="product.php?pid=' . $value_prod["PID"] . '">
-                              <img src="' . $value_prod["THUMBNAIL"] . '" alt="" class="product-img">
+                              <img src="'. $value_prod["THUMBNAIL"] .'" alt="" class="product-img">
                               <h2 class="product-title">' . $value_prod["NAME"] . '</h2>
                               <span class="price">$' . $value_prod["PRICE"] . '</span>
                           </a>
                           <!--box cart icon-->
-                          <i class="bx bx-cart-add"></i>
+                         <i class="bx bx-cart-add" counter='.$count.' pid='.$value_prod["PID"].' onclick="addToCartClicked(event, this)";></i>
                       </li>';
 }
 
@@ -47,6 +47,7 @@ foreach ($fetch_prod as $value_prod) {
     <meta name="viewport" content="width=device-width,initial-scale=1.0" charset="utf-8">
     <link rel="stylesheet" href="/css/style.css?v=<?php echo time(); ?>">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script type="text/javascript" src="/js/cart.js" defer> </script>
 
 </head>
 <body>
@@ -67,22 +68,17 @@ foreach ($fetch_prod as $value_prod) {
                     <h2 class="cart-title">Your Cart</h2>
                     <!--cart content-->
 
-                    <div class="cart-box">
-                        <img src="shop/airpod.jpg" alt="" class="cart-img">
-                        <div class="detail-box">
-                            <div class="cart-product-title">Airpod</div>
-                            <div class="cart-price">$25</div>
-                            <div class="cart-quantity"></div>
-                            <input type="number" min="0" value="1" class="cart-quantity">
-                        </div>
-                        <!--Remove-->
-                        <i class='bx bx-trash remove-item'></i>
+
+                    <div class="cart-list">
+
+
                     </div>
 
                     <div class="total">
-                        <div class="total-title">Total $25</div>
-                        <div class="totalprice"></div>
+                        　
+                        <div class="total-price"></div>
                     </div>
+
                     <!--Purchase-->
                     <button type="button" class="buy-button">Purchase</button>
                 </div>

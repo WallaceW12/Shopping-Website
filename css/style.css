@@ -121,6 +121,8 @@ header{
 #cart-icon:hover .cart{
     display: block;
     background-color: var(--base-color);
+    overflow-y: scroll;
+    scroll-behavior: smooth;
 }
 #cart-icon .cart{
     display: none;
@@ -137,13 +139,17 @@ li > a {
     right: 0px;
 
     width: 360px;
-    min-height: 100vh;
+    height:700px;
     border-radius: 5px;
     background-color:var(--base-color);
     box-shadow: -2px 0 4px hsl(0 4% 15% / 10%);
+
 }
 .cart:hover{
     display: block;
+    overflow-y: scroll;
+    overflow-block: auto;
+    scroll-behavior: smooth;
 
 }
 .cart-title{
@@ -167,6 +173,7 @@ li > a {
     gap: 1rem;
     margin-top: 1rem;
     position: relative;
+
 }
 .detail-box{
     display: grid;

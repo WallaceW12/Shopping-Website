@@ -17,18 +17,19 @@ $fetch_prod = ierg4210_prod_fetchAll();
 $count = 0;
 foreach ($fetch_prod as $value_prod) {
     $prod_box .=
-        '<li class="product_box">
+        '<li class="product_box" >
                           <a href="product.php?pid=' . $value_prod["PID"] . '">
                               <img src="'. $value_prod["THUMBNAIL"] .'" alt="" class="product-img">
                               <h2 class="product-title">' . $value_prod["NAME"] . '</h2>
                               <span class="price">$' . $value_prod["PRICE"] . '</span>
                           </a>
                           <!--box cart icon-->
-                         <i class="bx bx-cart-add" counter='.$count.' pid='.$value_prod["PID"].' onclick="addToCartClicked(event, this)";></i>
+                         <i class="bx bx-cart-add" counter='.$count.' pid='.$value_prod["PID"].' onclick="addToCartClicked(event, this);"></i>
                       </li>';
 
     $count++;
     // $li_cat .= '<li class="selected" ><a  class="category" href="category.php?cid='.$value_cat["CID"].'"><span>'.$value_cat["NAME"].'</span></a></li>';
+
 
 }
 ?>
@@ -40,13 +41,14 @@ foreach ($fetch_prod as $value_prod) {
         <meta name="viewport" content="width=device-width,initial-scale=1.0" charset="utf-8">
          <link rel="stylesheet" href="/css/style.css?v=<?php echo time(); ?>">
         <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-         <script type="text/javascript" src="/js/cart.js"> </script>
+         <script type="text/javascript" src="/js/cart.js" defer> </script>
      </head>
      <body>
          <!--header -->
         <header>
          <!--Nav -->
-        
+
+
             <div class="nav container">
                
                <a href="/home.php" class="logo">Shopping Sites</a>
@@ -67,8 +69,8 @@ foreach ($fetch_prod as $value_prod) {
                          </div>
 
                            <div class="total">
-                              <div class="total-title"></div>
-                              <div class="total-price">Total $25</div>
+                         　
+                              <div class="total-price"></div>
                            </div>
                            <!--Purchase-->
                            <button type="button" class="buy-button">Purchase</button>

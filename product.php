@@ -7,6 +7,7 @@ $cat_name ='';
 $pid = $_REQUEST["pid"];
 $li_cat = '';
 $prod_box ='';
+$count=0;
 
 
 $fetch_prod = ierg4210_prod_fetchOne($pid);
@@ -36,7 +37,7 @@ foreach ($cat as $ent_cat){
     <meta name="viewport" content="width=device-width,initial-scale=1.0" charset="utf-8">
     <link rel="stylesheet" href="/css/style.css?v=<?php echo time(); ?>">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
+    <script type="text/javascript" src="/js/cart.js" defer> </script>
 </head>
 <body>
 <!--header -->
@@ -56,21 +57,15 @@ foreach ($cat as $ent_cat){
                     <h2 class="cart-title">Your Cart</h2>
                     <!--cart content-->
 
-                    <div class="cart-box">
-                        <img src="shop/airpod.jpg" alt="" class="cart-img">
-                        <div class="detail-box">
-                            <div class="cart-product-title">Airpod</div>
-                            <div class="cart-price">$25</div>
-                            <div class="cart-quantity"></div>
-                            <input type="number" min="0" value="1" class="cart-quantity">
-                        </div>
-                        <!--Remove-->
-                        <i class='bx bx-trash remove-item'></i>
+
+                    <div class="cart-list">
+
+
                     </div>
 
                     <div class="total">
-                        <div class="total-title">Total $25</div>
-                        <div class="totalprice"></div>
+                        　
+                        <div class="total-price"></div>
                     </div>
                     <!--Purchase-->
                     <button type="button" class="buy-button">Purchase</button>
@@ -160,7 +155,7 @@ foreach ($cat as $ent_cat){
 
                 <div class="product-price">
                     <span> $ <?php echo $value["PRICE"]; ?></span>
-                    <a href="#" class="cart-btn">Add to cart</a>
+                    <a href="#" class="cart-btn"  pid="<?php echo $value['PID']; ?>" onclick="addToCartClicked(event, this);" >Add to cart</a>
 
                 </div>
 
