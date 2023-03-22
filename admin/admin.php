@@ -1,17 +1,33 @@
 <?php
+
 require __DIR__.'/lib/db.inc.php';
 
+
+if (session_id() == null)
+    session_start();
+
+include_once ('./auth.php');
+include_once('../csrf.php');
+
+if(auth() != 1){
+    header('Location: /home.php',302);
+    exit();
+}
+
+try {
+    csrf_verifyNonce($_REQUEST['action'], $_POST['nonce']);
+} catch (Exception $e) {
+    new Exception($e);
+};
 
 $catList = ierg4210_cat_fetchall();
 $prodList = ierg4210_prod_fetchall();
 
-//$categories = ierg4210_cat_fetchAll();
-//$products = ierg4210_prod_fetchAll();
 
 $options_cat = '';
 $options_prod = '';
 $divs_prod = '';
-
+$welcome='<p> Welcome! , '.$_SESSION['auth']['em'].' </p>';
 
 foreach ($catList as $value ){
     $options_cat .= '<option value="'.$value["CID"].'"> '.$value["NAME"].' </option>';
@@ -19,8 +35,7 @@ foreach ($catList as $value ){
 
 foreach ($prodList as $value ){
     $options_prod .= '<option value="'.$value["PID"].'"> '.$value["NAME"].' </option>';
-    //print_r($options_prod);
-    // $options .= '<option value="'.$value["CID"].'"> '.$value["NAME"].' </option>';
+
 }
 
 ?>
@@ -44,20 +59,27 @@ foreach ($prodList as $value ){
 
             <a href="/home.php" class="logo">Shopping Sites</a>
             <!--Cart -->
-            <div class="right-nav">
-                <a href="/admin/admin.php" class="logo">Admin</a>
+            <?php echo $welcome;?>
 
+            <div class="right-nav">
+                <form id="log-out" method="POST" action="auth-process.php?action=<?php echo ($action='logout');?>" enctype="multipart/form-data">
+                    <input  class="log-out" type="submit" value="Logout">
+                    <input type="hidden" name="nonce" value="<?php echo csrf_getNonce($action);?>">
+                </form>
             </div>
+
             <!--horizontal Nav-->
         </div>
 
     </header>
 
     <div class="form-container">
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+
         <fieldset class="form-fill"　id="add-product-form">
+
             <legend> ADD New Product</legend>
-            <form id="add_prod" method="POST" action="admin-process.php?action=prod_insert" enctype="multipart/form-data">
+            <form class="form-fill-children" id="add_prod" method="POST" action="admin-process.php?action=<?php echo ($action='prod_insert');?>" enctype="multipart/form-data">
                 <label for="prod_cid"> Category *</label>
                 <div> <select id="prod_cid" name="CID"><?php echo $options_cat; ?></select></div>
 
@@ -68,43 +90,44 @@ foreach ($prodList as $value ){
                 <div> <input type="number"  min="0" name="PRICE" step="any" id="price-new-product" pattern="^[\d\.]+$" required></div>
 
                 <label for="prod_desc"> Description *</label></br>
-                <textarea name="DESCRIPTION" id="description-add-product" cols="30" rows="10" required></textarea>
+                <textarea name="DESCRIPTION" id="description-add-product" cols="30" rows="10"  pattern="^(.|\s)*[a-zA-Z]+(.|\s)*$" required></textarea>
                 </br>
 
                 <label for="prod_inventory"> Inventory *</label>
-                <div> <input id="prod_inventory" type="text" pattern="^[\d\.]+$" name="INVENTORY" required="required"> </div>
+                <div> <input id="prod_inventory" type="text" pattern="^[\d\.]+$" name="INVENTORY" required> </div>
 
                 <label for="prod_image"> Image * </label>
 
 
-
-
-                        <div class="drop-zone">
-                            <img class="image_uploaded_add" src="" alt="">
-                            <p class="drag-and-drop_p">Drop file or click to upload</p>
-                            <input class ="upload_button" type="file" name="IMAGE" hidden required="true" accept="image/jpeg, image/png, image/gif">
-
-                        </div>
-
-
-
+                <div class="drop_add">
+                    <div class="drop-zone">
+                        <img class="image_uploaded_add" src="" alt="">
+                        <p class="drag-and-drop_p">Drop file or click to upload</p>
+                        <input class ="upload_button" type="file"   name="IMAGE" required="true" accept="image/jpeg, image/png, image/gif">
+                      <script type="text/javascript" src="/js/drag-and-drop.js"></script>
+                    </div>
+                </div>
 
                 <input type="submit" value="Submit"/>
+                <input type="hidden" name="nonce" value="<?php echo csrf_getNonce($action);?>">
             </form>
         </fieldset>
+
+
         <fieldset class="form-fill"　id="add-cat-form" >
             <legend> ADD Categories  </legend>
-            <form id="cat_insert" method="POST" action="admin-process.php?action=cat_insert"
+            <form id="cat_insert" method="POST" action="admin-process.php?action=<?php echo ($action='cat_insert');?>"
             enctype="multipart/form-data">
 
                 <label for="add_cat_name"> Name *</label>
                 <div> <input id="cat_name" type="text" name="CATEGORY" required="required" pattern="^[\w\-]+$"/></div>
                 <input type="submit" value="Submit"/>
+                <input type="hidden" name="nonce" value="<?php echo csrf_getNonce($action);?>">
             </form>
         </fieldset>
         <fieldset class="form-fill"　id="edit-cat-form">
             <legend> Edit Categories</legend>
-            <form id="cat_edit" method="POST" action="admin-process.php?action=cat_edit"
+            <form id="cat_edit" method="POST" action="admin-process.php?action=<?php echo ($action='cat_edit');?>"
             enctype="multipart/form-data">
                 <label for="edit_cat_name"> Choose the Category to be edited *</label></br>
                 <select name="CID" id="CID-delete">
@@ -114,11 +137,12 @@ foreach ($prodList as $value ){
                 <br><label for="edit_cat_name"> New Name * </label> </br>
                 <div> <input id="cat_name" type="text" name="CATEGORY" required="required" pattern="^[\w\-]+$"/></div>
                 <input type="submit" value="Submit"/>
+                <input type="hidden" name="nonce" value="<?php echo csrf_getNonce($action);?>">
             </form>
         </fieldset>
         <fieldset class="form-fill"　id="delete-cat-form">
             <legend> DELETE Categories</legend>
-            <form id="cat_edit" method="POST" action="admin-process.php?action=cat_delete"
+            <form id="cat_edit" method="POST" action="admin-process.php?action=<?php echo ($action='cat_delete');?>"
                   enctype="multipart/form-data">
                 <label for="edit_cat_name"> Choose the Category to be deleted *</label></br>
                 <select name="CID" id="CID-delete">
@@ -126,13 +150,14 @@ foreach ($prodList as $value ){
                 </select>
 
                 <input type="submit" value="Submit"/>
+                <input type="hidden" name="nonce" value="<?php echo csrf_getNonce($action);?>">
             </form>
         </fieldset>
 
         <fieldset class="form-fill"　id="edit-product-form">
             <legend>Edit Product Form </legend>
-            <form method="POST" action="admin-process.php?action=prod_edit" enctype="multipart/form-data" onsubmit="return check_option(this)">
-                <label for="PID-edit">Choose a product to be Edited &#42;</label>
+            <form method="POST" action="admin-process.php?action=<?php echo ($action='prod_edit');?>" enctype="multipart/form-data" ">
+                <label for="PID-edit">Choose a product to be Edited;</label>
                 <select name="CID" id="CID-delete">
                     <?php echo $options_cat; ?>
                 </select></br>
@@ -147,7 +172,7 @@ foreach ($prodList as $value ){
                 <div> <input type="number" min="0" name="PRICE" step="any" id="price-new-product" pattern="^[\d\.]+$" required></div>
 
                 <label for="prod_desc"> Description *</label></br>
-                <textarea name="DESCRIPTION" id="description-add-product" cols="30" rows="10" required></textarea>
+                <textarea name="DESCRIPTION" id="description-add-product" cols="30" rows="10" pattern="^(.|\s)*[a-zA-Z]+(.|\s)*$" required></textarea>
                 </br>
 
                 <label for="prod_inventory"> Inventory *</label>
@@ -155,22 +180,25 @@ foreach ($prodList as $value ){
 
                 <label for="prod_image"> Image * </label>
 
-                <div class="drop-zone">
-                    <img class="image_uploaded_add" src="" alt="">
-                    <p class="drag-and-drop_p">Drop file or click to upload</p>
-                    <input class ="upload_button" type="file" name="IMAGE" hidden required="true" accept="image/jpeg, image/png, image/gif">
-                    <script type="text/javascript" src="/js/drag-and-drop.js"> </script>
+                <div class="drop_edit">
+                    <div class="drop-zone">
+                        <img class="image_uploaded_add" src="" alt="">
+                        <p class="drag-and-drop_p">Drop file or click to upload</p>
+                        <input class ="upload_button" type="file" name="IMAGE"    accept="image/jpeg, image/png, image/gif">
+                       <!-- <script type="text/javascript" src="/js/drag-and-drop-edit.js"> </script>-->
+                    </div>
                 </div>
 
                 <input type="submit" value="Submit"/>
+                <input type="hidden" name="nonce" value="<?php echo csrf_getNonce($action);?>">
             </form>
         </fieldset>
 
 
         <fieldset class="form-fill"　id="delete-prod-form">
             <legend>Product Delete Form </legend>
-            <form method="POST" action="admin-process.php?action=prod_delete" enctype="multipart/form-data" >
-                <label for="CID-delete">Choose a Product to be Deleted &#42;</label>
+            <form method="POST" action="admin-process.php?action=<?php echo ($action='prod_delete');?>" enctype="multipart/form-data" >
+                <label for="CID-delete">Choose a Product to be Deleted;</label>
                 <select name="PID" id="PID-delete">
                     <?php echo $options_prod; ?>
                 </select>
@@ -178,6 +206,7 @@ foreach ($prodList as $value ){
                 <div class="actions">
                     <input type="reset" value="Reset">
                     <input type="submit" value="Submit">
+                    <input type="hidden" name="nonce" value="<?php echo csrf_getNonce($action);?>">
                 </div>
             </form>
         </fieldset>

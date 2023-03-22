@@ -1,20 +1,10 @@
 <?php
 function ierg4210_DB() {
-	// connect to the database
-	// TODO: change the following path if needed
-	// Warning: NEVER put your db in a publicly accessible location
-	$db = new PDO('sqlite:/var/www/cart.db');
+    global $db;
+    $db = new PDO('sqlite:/var/www/cart.db');
+    $db->query('PRAGMA foreign_keys = ON;');
 
-	// enable foreign key support
-	$db->query('PRAGMA foreign_keys = ON;');
-
-	// FETCH_ASSOC:
-	// Specifies that the fetch method shall return each row as an
-	// array indexed by column name as returned in the corresponding
-	// result set. If the result set contains multiple columns with
-	// the same name, PDO::FETCH_ASSOC returns only a single value
-	// per column name.
-	$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+ 	$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 	return $db;
 }
@@ -31,6 +21,10 @@ function ierg4210_cat_fetchall() {
 // Since this form will take file upload, we use the tranditional (simpler) rather than AJAX form submission.
 // Therefore, after handling the request (DB insert and file copy), this function then redirects back to admin.html
 function ierg4210_prod_insert() {
+    // DB manipulation
+    global $db;
+    $db = ierg4210_DB();
+
     // input validation or sanitization
 
     // TODO: complete the rest of the INSERT command
@@ -44,7 +38,7 @@ function ierg4210_prod_insert() {
 
     if (!preg_match('/^[\d]+$/', $_POST['INVENTORY']))
         throw new Exception("invalid-inventory");
-    if (!preg_match('/^[\w\- ]+$/', $_POST['DESCRIPTION']))
+    if (!preg_match('/^(.|\s)*[a-zA-Z]+(.|\s)*$/', $_POST['DESCRIPTION']))
         throw new Exception("invalid-textt");
    // $_POST['description'] = (string) $_POST['description'];
 
@@ -57,9 +51,6 @@ function ierg4210_prod_insert() {
     $default_thumbnail= "./images/thumbnails/_default_thumbnail.jpg";
     $sql="INSERT INTO PRODUCTS (CID, NAME, PRICE, INVENTORY, DESCRIPTION, IMAGE, THUMBNAIL) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
-    // DB manipulation
-    global $db;
-    $db = ierg4210_DB();
 
     $q = $db->prepare($sql);
     $q->bindParam(1, $cid);
@@ -70,28 +61,33 @@ function ierg4210_prod_insert() {
     $q->bindParam(6, $default_image);
     $q->bindParam(7, $default_thumbnail);
 
-    $q->execute();
+   $q->execute();
+
+
     
     $lastId = $db->lastInsertId();
 
 
-    if ($_FILES["IMAGE"]["error"] == 0
-        && ($_FILES["IMAGE"]["type"] == "image/jpeg" || $_FILES["IMAGE"]["type"] == "image/png" || $_FILES["IMAGE"]["type"] == "image/gif")
-        && (mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/jpeg" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/png" || mime_content_type($_FILES["IMAGE"]["tmp_name"]) == "image/gif" )
-        && $_FILES["IMAGE"]["size"] < 40000000) {
+    if ($_FILES['IMAGE']['error'] == 0
+        && ($_FILES['IMAGE']['type'] == "image/jpeg" || $_FILES['IMAGE']['type'] == "image/png" || $_FILES['IMAGE']['type'] == "image/gif")
+       // && (mime_content_type($_FILES['IMAGE']["tmp_name"]) == "image/jpeg" || mime_content_type($_FILES['IMAGE']["tmp_name"]) == "image/png" || mime_content_type($_FILES['IMAGE']["tmp_name"]) == "image/gif" )
+        && $_FILES['IMAGE']['size'] < 40000000) {
 
 
 
-        $file = $_FILES['IMAGE']['tmp_name'];
+        $file = $_FILES["IMAGE"]["tmp_name"];
+
         list($width,$height)=getimagesize($file);
         $nwidth=300;
         $nheight=200;
+
+
 
         if($_FILES["IMAGE"]["type"] == "image/jpeg"){
 
             $source=imagecreatefromjpeg($file);
 
-            header('Content-Type: image/jpeg');
+           // header('Content-Type: image/jpeg');
             $temp_thumb = imagescale($source, 300, $nheight);
 
             if(move_uploaded_file($file, "/var/www/html/images/" . $lastId . ".jpg") ) {
@@ -102,6 +98,8 @@ function ierg4210_prod_insert() {
                 $q->bindParam(2, $lastId);
                 $q->execute();
 
+            }else{
+                echo ("error on uploaded_fiel");
             }
             if (imagejpeg($temp_thumb, "/var/www/html/images/thumbnails/" . $lastId . "_thumbnail.jpg") ) {
                 $new_thumbnail_path = "./images/thumbnails/" . $lastId . "_thumbnail.jpg";
@@ -110,11 +108,14 @@ function ierg4210_prod_insert() {
                 $q->bindParam(1, $new_thumbnail_path);
                 $q->bindParam(2, $lastId);
                 $q->execute();
-                imagedestroy($temp_thumb);
-            }
 
+            }
+            else{
+                echo ("error on thumb nail create");
+            }
+            imagedestroy($temp_thumb);
             header('Location: admin.php');
-            exit();
+          exit();
         }
         else if($_FILES["IMAGE"]["type"] == "image/png"){
 
@@ -130,7 +131,10 @@ function ierg4210_prod_insert() {
                 $q->bindParam(1, $new_image_path);
                 $q->bindParam(2, $lastId);
                 $q->execute();
+                echo"finished 234 ";
 
+            }else{
+                echo ("error on uploaded_fiel");
             }
             if (imagepng($temp_thumb, "/var/www/html/images/thumbnails/" . $lastId . "_thumbnail.png") ) {
                 $new_thumbnail_path = "./images/thumbnails/" . $lastId . "_thumbnail.png";
@@ -140,7 +144,12 @@ function ierg4210_prod_insert() {
                 $q->bindParam(2, $lastId);
                 $q->execute();
                 imagedestroy($temp_thumb);
+                echo"finished 2343 ";
             }
+            else{
+                echo ("error on thumb nail create");
+            }
+            imagedestroy($temp_thumb);
             header('Location: admin.php');
             exit();
         }
@@ -160,6 +169,8 @@ function ierg4210_prod_insert() {
                 $q->bindParam(2, $lastId);
                 $q->execute();
 
+            }else{
+                echo ("error on uploaded_fiel");
             }
             if (imagegif($temp_thumb, "/var/www/html/images/thumbnails/" . $lastId . "_thumbnail.gif")) {
                 $new_thumbnail_path = "./images/thumbnails/" . $lastId . "_thumbnail.gif";
@@ -170,19 +181,28 @@ function ierg4210_prod_insert() {
                 $q->execute();
 
             }
+            else{
+                echo ("error on thumb nail create");
+            }
             imagedestroy($temp_thumb);
-            header('Location: admin.php#category-add-form');
-            exit();
+
+           header('Location: admin.php#category-add-form');
+          exit();
         }else{
-            header('Location: admin.php#category-add-form');
-            echo 'Invalid file detected. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
+            header('Location: admin.php');
+
+            echo 'Invalid file detected';
             exit();
 
         }
     }
+    else{
+        echo 'error file detected';
+    }
     header('Content-Type: text/html; charset=utf-8');
-    header('Location: admin.php#category-add-form');
-    echo 'Invalid file detected. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
+    header('Location: admin.php');
+
+
     exit();
 
 }
@@ -197,14 +217,15 @@ function ierg4210_cat_insert() {
     if (!preg_match('/^[\w\- ]+$/', $_POST["CATEGORY"]))
         throw new Exception("invalid-CATEGORY");
 
-    $sql="INSERT INTO CATEGORIES (NAME) VALUES (?);";
-    $q = $db->prepare($sql);
-    $name = $_POST["CATEGORY"];
-    $q->bindParam(1, $name);
+    $sql=$db->prepare("INSERT INTO CATEGORIES (NAME) VALUES (?);");
 
-    $q->execute();
+    $name =  $_POST["CATEGORY"];
 
-    header('Location: admin.php#category-add-form');
+    $sql->bindParam(1, $name);
+
+    $sql->execute();
+
+     header('Location: /home.php ');
     exit();
 }
 function ierg4210_cat_edit(){
@@ -259,8 +280,9 @@ function ierg4210_cat_delete(){
 }
 
 function ierg4210_prod_delete_by_cid($cid){
-    if (!preg_match('/^\d*$/', $_POST['CID']))
+    if (!preg_match('/^\d*$/', $cid))
         throw new Exception("invalid-CID");
+
     $cid = (int) $cid;
 
     global $db;
@@ -286,6 +308,10 @@ function ierg4210_prod_fetchAll(){
 function ierg4210_prod_fetchCat($cid) {
     global $db;
     $db = ierg4210_DB();
+    if (!preg_match('/^\d*$/', $cid))
+        throw new Exception("invalid-cid");
+
+    $cid = (int)$cid;
     $q = $db->prepare("SELECT * FROM PRODUCTS WHERE CID=?;");
 
     $q->bindParam(1, $cid);
@@ -297,7 +323,10 @@ function ierg4210_prod_fetchOne($pid){
 
     global $db;
     $db = ierg4210_DB();
+    if (!preg_match('/^\d*$/', $_POST["PID"]))
+        throw new Exception("invalid-pid");
 
+    $pid = (int)$pid;
 
     $q = $db->prepare("SELECT * FROM PRODUCTS WHERE PID = ?;");
 
@@ -324,7 +353,7 @@ function ierg4210_prod_edit(){
         throw new Exception("invalid-price");
     if (!preg_match('/^[\d]+$/', $_POST['INVENTORY']))
         throw new Exception("invalid-inventory");
-    if (!preg_match('/^[\w\- ]+$/', $_POST['DESCRIPTION']))
+    if (!preg_match('/^(.|\s)*[a-zA-Z]+(.|\s)*$/', $_POST['DESCRIPTION']))
         throw new Exception("invalid-textt");
     // $_POST['description'] = (string) $_POST['description'];
 
@@ -381,6 +410,10 @@ function ierg4210_prod_edit(){
                 $q->bindParam(2, $pid);
                 $q->execute();
 
+            }else{
+                echo ("upload file failed");
+                header('Location: admin.php');
+                exit();
             }
             if (imagejpeg($temp_thumb, "/var/www/html/images/thumbnails/" . $pid . "_thumbnail.jpg") ) {
                 $new_thumbnail_path = "./images/thumbnails/" . $pid . "_thumbnail.jpg";
@@ -390,6 +423,10 @@ function ierg4210_prod_edit(){
                 $q->bindParam(2, $pid);
                 $q->execute();
                 imagedestroy($temp_thumb);
+            }else{
+                echo ("create thumbnail faile");
+                header('Location: admin.php');
+                exit();
             }
 
             header('Location: admin.php');
@@ -410,6 +447,10 @@ function ierg4210_prod_edit(){
                 $q->bindParam(2, $pid);
                 $q->execute();
 
+            }else{
+                echo ("upload file failed");
+                header('Location: admin.php');
+                exit();
             }
             if (imagepng($temp_thumb, "/var/www/html/images/thumbnails/" . $pid . "_thumbnail.png") ) {
                 $new_thumbnail_path = "./images/thumbnails/" . $pid . "_thumbnail.png";
@@ -419,6 +460,10 @@ function ierg4210_prod_edit(){
                 $q->bindParam(2, $pid);
                 $q->execute();
                 imagedestroy($temp_thumb);
+            }else{
+                echo ("create thumbnail failed");
+                header('Location: admin.php');
+                exit();
             }
             header('Location: admin.php');
             exit();
@@ -439,6 +484,10 @@ function ierg4210_prod_edit(){
                 $q->bindParam(2, $pid);
                 $q->execute();
 
+            }else{
+                echo ("upload file failed");
+                header('Location: admin.php');
+                exit();
             }
              if (imagegif($temp_thumb, "/var/www/html/images/thumbnails/" . $pid . "_thumbnail.gif")) {
                 $new_thumbnail_path = "./images/thumbnails/" . $pid . "_thumbnail.gif";
@@ -448,20 +497,24 @@ function ierg4210_prod_edit(){
                 $q->bindParam(2, $pid);
                 $q->execute();
 
-            }
+            }else{
+                 echo ("create thumbnail failed");
+                 header('Location: admin.php');
+                 exit();
+             }
             imagedestroy($temp_thumb);
             header('Location: admin.php');
             exit();
         }else{
             header('Location: admin.php');
-            echo 'Invalid file detected. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
+            echo 'Invalid file detected.';
             exit();
 
         }
     }
     header('Content-Type: text/html; charset=utf-8');
     header('Location: admin.php');
-    echo 'Invalid file detected. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
+    echo 'Invalid file detected.';
     exit();
 
 

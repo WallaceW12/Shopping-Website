@@ -5,12 +5,8 @@ updateCartLocal('load',-1,null)
 
 function addItemToCart(title,price,img, pid){
 
-
-
    let cartRow = document.createElement('div')
     cartRow.classList.add('cart-row')
-
-
 
 
     let cartRowContent = `
@@ -20,10 +16,10 @@ function addItemToCart(title,price,img, pid){
         <div class="cart-product-title" >${title}</div>
         <div class="cart-price">$${price}</div>
         <div class="quantity">
-            <input type="number" min="0" value="1" class="cart-quantity" onchange="quantityChanged(event,${pid})">
+            <input type="number" min="0" value="1"  pattern="^[1-9]+[0-9]*$" class="cart-quantity" onchange="quantityChanged(event,${pid})">
           </div>
     </div>
-    <i class='bx bx-trash remove-item' onclick="removeCartItemButtons(event,this);"></i>
+    <i class='bx bx-trash remove-item' onclick="removeCartItemButtons(event,this,${pid});"></i>
  </div>`
 
 
@@ -39,6 +35,7 @@ function addItemToCart(title,price,img, pid){
 function addLocalStorage(pid, cartRow){
     let currentQuantity = Number(localStorage.getItem(pid));
 
+
     if (currentQuantity == null || currentQuantity == 0 || currentQuantity == "")
         localStorage.setItem(pid, Number(1));
     else
@@ -50,16 +47,24 @@ function addLocalStorage(pid, cartRow){
 
 }
 
+const valid_pattern = /^[1-9]+[0-9]*$/;
 function quantityChanged(event,pid){
     var input = event.target
+
+
     //is number or not + non-neg
-    if(isNaN(input.value) || input.value <= 0){
-        input.value = 1;
+    if(isNaN(input.value) || input.value < 0 || !input.value.match(valid_pattern)){
+
+        localStorage.removeItem(pid);
+        input.parentElement.parentElement.parentElement.remove();
+
+
+    }else{
+        var updatedQuantity = String(Math.trunc(input.value));
+        localStorage.setItem(pid,updatedQuantity)
+
+
     }
-    var updatedQuantity = input.value;
-
-    localStorage.setItem(pid,updatedQuantity)
-
     document.getElementsByClassName('total-price')[0].innerText = '$' + TotalPrice().toFixed(2)
 
 
@@ -97,7 +102,7 @@ function addToCartClicked(event,self){
 
 
             addItemToCart(title,price,img,pid)
-             console.log(title,price,img,count)
+         //    console.log(title,price,img,count)
 
         }
 
@@ -122,18 +127,18 @@ function removeCartItemButtons(event,self,pid){
 
 
     var button = event.target
-    //console.log('clic3ked')
+    console.log('clic3ked')
 
-    self.disabled = true;
-    self.classList.add("adding");
+   // self.disabled = true;
+   // self.classList.add("adding");
 
-    localStorage.removeItem(pid);
+   localStorage.removeItem(pid);
 
-    button.parentElement.remove()
+    button.parentElement.remove();
 
-
-    self.disabled = false;
-    self.classList.remove("adding");
+//
+    //self.disabled = false;
+  //  self.classList.remove("adding");
 
     document.getElementsByClassName('total-price')[0].innerText = '$' + TotalPrice().toFixed(2)
 
@@ -158,10 +163,7 @@ function updateCartTotal(){
 }
 
 function updateCartLocal(mode,pid, additem){
-    let currentCart = document.querySelector(".cart .cart-list");
 
-
-    let priceDisplay = document.querySelector(".total-price");
 
 
 
@@ -176,7 +178,7 @@ function updateCartLocal(mode,pid, additem){
 
        　
             let pid = localStorage.key(i);
-            console.log(pid)
+           // console.log(pid)
             let image = '';
             let title='';
             let price=0;
@@ -184,7 +186,7 @@ function updateCartLocal(mode,pid, additem){
 
 
 
-            console.log("PID:" + pid + "item:  " + localStorage.getItem(pid))
+           // console.log("PID:" + pid + "item:  " + localStorage.getItem(pid))
             // what to do after sending the request
 
             let request = new XMLHttpRequest();
@@ -192,8 +194,8 @@ function updateCartLocal(mode,pid, additem){
 
 
               //  let cartRowContent = document.querySelector(`#cart-box-template`);
-
-                if(this.status == 200 && this.readyState==4){
+            if(this.readyState==4){
+                if(this.status == 200 ){
 
 
 
@@ -201,20 +203,20 @@ function updateCartLocal(mode,pid, additem){
                     cartRow.classList.add('cart-row')
                     var cartItem = document.getElementsByClassName("cart-list")[0];
 
-                        title = JSON.parse(this.responseText).NAME;
-                        price = Number(JSON.parse(this.responseText).PRICE);
-                        image = JSON.parse(this.responseText).THUMBNAIL;
-                        item_quantity= Number(localStorage.getItem(pid));
+                    title = JSON.parse(this.responseText).NAME;
+                    price = Number(JSON.parse(this.responseText).PRICE);
+                    image = JSON.parse(this.responseText).THUMBNAIL;
+                    item_quantity= Number(localStorage.getItem(pid));
 
 
 
-                        const cartRowContent = `<div class="cart-box" id="p${pid}">
+                    const cartRowContent = `<div class="cart-box" id="p${pid}">
                         <img  src="${image}" alt="" class="cart-img" >
                         <div class="detail-box" >
                             <div class="cart-product-title" >${title}</div>
                             <div class="cart-price">$${price}</div>
                             <div class="quantity">
-                                <input type="number" min="0" value="${item_quantity}" class="cart-quantity" onchange="quantityChanged(event,${pid});">
+                                <input type="number" min="0" value="${item_quantity}" pattern="^[1-9]+[0-9]*$" class="cart-quantity" onchange="quantityChanged(event,${pid});"  required>
                               </div>
                         </div>
                         <i class='bx bx-trash remove-item' onclick="removeCartItemButtons(event,this,${pid});"></i>
@@ -222,21 +224,23 @@ function updateCartLocal(mode,pid, additem){
 
 
 
-                        // append to current HTML
-                        cartRow.innerHTML = cartRowContent
-                        cartItem.append(cartRow);
+                    // append to current HTML
+                    cartRow.innerHTML = cartRowContent
+                    cartItem.append(cartRow);
 
 
-                        document.querySelector(`#p${pid} input`).value = item_quantity;
+                    document.querySelector(`#p${pid} input`).value = item_quantity;
 
-                        // then calculate price
+                    // then calculate price
                     document.getElementsByClassName('total-price')[0].innerText = '$' + TotalPrice().toFixed(2)
 
 
                 }
 
 
-                }
+            }
+            }
+
             request.open("GET", "cart-update.php?pid=" + pid, true);
             request.send();
 
@@ -273,19 +277,15 @@ function updateCartLocal(mode,pid, additem){
                       cartItem.append(additem);
 
                        // console.log(cartItem);
-
+                      document.getElementsByClassName('total-price')[0].innerText = '$' + TotalPrice().toFixed(2)
                   }
               };
               request.open("GET", "cart-update.php?pid=" + pid, true);
               request.send();
 
-              priceDisplay.innerHTML = `Total: ${TotalPrice().toFixed(2)}`;
+
           }
-
-          // update old item
-          else {
-
-
+          else { // if cart have item
 
               // first update the quantity
               document.querySelector(`#p${pid} input`).value = Number(localStorage.getItem(pid));
@@ -303,7 +303,7 @@ function updateCartLocal(mode,pid, additem){
               // show the updated total price
               document.getElementsByClassName('total-price')[0].innerText = '$' + TotalPrice().toFixed(2)
 
-              // show the updated total quantity
+
 
 
           }

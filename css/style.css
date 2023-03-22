@@ -70,7 +70,7 @@ header{
     position: fixed;
     display: flex;
     flex-direction: column;
-    top: 80px;
+    top: 100px;
     width: 15%;
     height: 80vh;
     left: 25px;
@@ -108,14 +108,18 @@ header{
     padding: 20px 0;
 }
 .logo {
-    font-size: 1.1rem;
-    justify-content: left;
+    display: flex;
+    font-size: 20px;
+    padding-right: 10px ;
+    padding-left: 10px ;
+    align-items: center;
     color: var(--text-color);
-    font-weight: 400;
+
+
 }
 #cart-icon{
     font-size: 1.8rem;
-    right: 0px;
+    padding-right: 20px;
 }
 
 #cart-icon:hover .cart{
@@ -364,4 +368,19 @@ li > a {
 .inventory-left{
     font-size: 16px;
 
+}
+.right-nav{
+    display: flex;
+    padding: 10px 10px;
+}
+.user-menu .log-out-outside{
+
+    color: var(--text-color);
+    display: flex;
+
+    padding: 4px 4px;
+    font-size: 15px;
+    border: none;
+    background: none;
+    cursor: pointer;
 }

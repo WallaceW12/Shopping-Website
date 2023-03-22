@@ -1,5 +1,8 @@
 <?php
 require __DIR__.'/admin/lib/db.inc.php';
+
+include_once ('./admin/auth.php');
+
 $cid = $_REQUEST["cid"];
 $categories = ierg4210_cat_fetchAll();
 $li_cat = '';
@@ -7,7 +10,28 @@ $current_cat='';
 $fetch_prod = '';
 $count = 0;
 $prod_box = '';
+$login ='';
 
+$adminPanel='';
+$welcome='';
+
+if (session_id() == null){
+    session_start();
+}
+
+if(auth() == 1 || auth() == 2){
+    $login .= '<form class="user-menu" method="POST" action="/admin/auth-process.php?action=logout" enctype="multipart/form-data">
+                    <input  class="log-out-outside" type="submit" value="Logout">
+                </form>';
+
+    if(auth() == 1){
+        $adminPanel ='  <a href="/admin/admin.php" class="logo">Manage</a>';
+    }
+    $welcome='<p> Welcome! , '.$_SESSION['auth']['em'].' </p>';
+}else{
+    $login =  '<a href="/login.php" class="logo">Login</a>';
+    $welcome='<p> Welcome!, Guess </p>';
+}
 
 foreach ($categories as $value_cat) {
     if ($value_cat["CID"] == $cid) {
@@ -58,9 +82,16 @@ foreach ($fetch_prod as $value_prod) {
     <div class="nav container">
 
         <a href="/home.php" class="logo">Shopping Sites</a>
+        <?php
+
+        echo $welcome;
+
+        ?>
         <!--Cart -->
         <div class="right-nav">
-            <a href="/admin/admin.php" class="logo">Admin</a>
+            <?php
+            echo $adminPanel;
+            ?>
 
             <i class='bx bx-cart' class = "logo" id="cart-icon">
 
@@ -84,6 +115,8 @@ foreach ($fetch_prod as $value_prod) {
                 </div>
 
             </i>
+            <?php echo $login; ?>
+
         </div>
         <!--horizontal Nav-->
     </div>

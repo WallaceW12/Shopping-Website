@@ -1,5 +1,21 @@
 <?php
 include_once('lib/db.inc.php');
+if (session_id() == null)
+    session_start();
+
+include_once('./auth.php');
+include_once('../csrf.php');
+
+if (!auth() || auth() == 2) {
+    print_r("Not auth");
+    header('Location: /home.php',301);
+    exit();
+}
+try {
+   csrf_verifyNonce($_REQUEST['action'], $_POST['nonce']);
+} catch (Exception $e) {
+    new Exception($e);
+};
 
 header('Content-Type: application/json');
 

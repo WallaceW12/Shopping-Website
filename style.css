@@ -184,6 +184,8 @@ li > a {
     width: 2.4rem;
     text-align: center;
     font-size: large;
+    border-radius: 40px;
+
 }
 .remove-item{
     font-size: 24px;

@@ -2,13 +2,37 @@
 
 require __DIR__ . '/admin/lib/db.inc.php';
 
+include_once ('./admin/auth.php');
+
 $cat = ierg4210_cat_fetchAll();
 $cat_name ='';
 $pid = $_REQUEST["pid"];
 $li_cat = '';
 $prod_box ='';
 $count=0;
+$login='';
 
+$adminPanel='';
+$welcome='';
+
+if (session_id() == null){
+    session_start();
+}
+
+if(auth() == 1 || auth() == 2){
+    $login .= '<form class="user-menu" method="POST" action="/admin/auth-process.php?action=logout" enctype="multipart/form-data">
+                    <input  class="log-out-outside" type="submit" value="Logout">
+                </form>';
+
+    if(auth() == 1){
+        $adminPanel ='  <a href="/admin/admin.php" class="logo">Manage</a>';
+    }
+    //welcome message, retrieve stored email
+    $welcome='<p> Welcome! , '.$_SESSION['auth']['em'].' </p>';
+}else{
+    $login =  '<a href="/login.php" class="logo">Login</a>';
+    $welcome='<p> Welcome!, Guess </p>';
+}
 
 $fetch_prod = ierg4210_prod_fetchOne($pid);
 foreach ($fetch_prod as $value) {
@@ -47,9 +71,17 @@ foreach ($cat as $ent_cat){
     <div class="nav container">
 
         <a href="/home.php" class="logo">Shopping Sites</a>
+        <?php
+
+        echo $welcome;
+
+        ?>
         <!--Cart -->
         <div class="right-nav">
-            <a href="/admin/admin.php" class="logo">Admin</a>
+            <?php
+            echo $adminPanel;
+            ?>
+
 
             <i class='bx bx-cart' class = "logo" id="cart-icon">
 
@@ -72,6 +104,7 @@ foreach ($cat as $ent_cat){
                 </div>
 
             </i>
+            <?php echo $login; ?>
         </div>
         <!--horizontal Nav-->
     </div>
@@ -91,9 +124,9 @@ foreach ($cat as $ent_cat){
     <section class="nav-menu">
 
         <a href="home.php" class="nav-home">Home</a>
-        >
+         >
         <?php echo '<a href="category.php?cid='.$value["CID"].'">'.$cat_name.'</a>' ?>
-        >
+         >
         <?php echo '<a href="product.php?pid='.$value["PID"].'">'.$value["NAME"].'</a>' ?>
 
     </section>

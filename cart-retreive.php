@@ -3,6 +3,8 @@ include_once('admin/lib/db.inc.php');
 
 if (!preg_match('/^\d*$/', $_GET['pid']))
     throw new Exception("invalid-pid");
+
+
 $_GET['pid'] = (int) $_GET['pid'];
 
 $pid = $_GET['pid'];

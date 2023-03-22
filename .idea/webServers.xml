@@ -2,7 +2,7 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="0c81e14c-fba7-47ae-a15c-c36f29f5dd04" name="IERG4210-Server">
+      <webServer id="0c81e14c-fba7-47ae-a15c-c36f29f5dd04" name="IERG4210-Server" url="https://secure.s29.ierg4210.ie.cuhk.edu.hk/">
         <fileTransfer rootFolder="/var/www/html" accessType="SFTP" host="35.77.191.219" port="22" sshConfigId="c6d6f144-b32c-4e85-a27e-70e32aa69719" sshConfig="ec2-user@35.77.191.219:22 key" keyPair="true">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
