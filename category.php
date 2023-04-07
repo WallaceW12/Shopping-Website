@@ -14,12 +14,13 @@ $login ='';
 
 $adminPanel='';
 $welcome='';
+$name='Guest';
 
 if (session_id() == null){
     session_start();
 }
 
-if(auth() == 1 || auth() == 2){
+if(auth() ){
     $login .= '<form class="user-menu" method="POST" action="/admin/auth-process.php?action=logout" enctype="multipart/form-data">
                     <input  class="log-out-outside" type="submit" value="Logout">
                 </form>';
@@ -27,12 +28,15 @@ if(auth() == 1 || auth() == 2){
     if(auth() == 1){
         $adminPanel ='  <a href="/admin/admin.php" class="logo">Manage</a>';
     }
-    $welcome='<p> Welcome! , '.$_SESSION['auth']['em'].' </p>';
+    if (!empty($_SESSION['auth'])) {
+        $name = substr($_SESSION['auth']['em'], 0, strrpos($_SESSION['auth']['em'],"@"));
+    }
+
 }else{
     $login =  '<a href="/login.php" class="logo">Login</a>';
-    $welcome='<p> Welcome!, Guess </p>';
-}
 
+}
+$welcome='<p> Welcome! , '.$name.' </p>';
 foreach ($categories as $value_cat) {
     if ($value_cat["CID"] == $cid) {
 
@@ -111,6 +115,9 @@ foreach ($fetch_prod as $value_prod) {
                     </div>
 
                     <!--Purchase-->
+                    <?php require_once('payment.php');
+
+                    ?>
                     <button type="button" class="buy-button">Purchase</button>
                 </div>
 

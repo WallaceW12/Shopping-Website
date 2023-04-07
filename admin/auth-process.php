@@ -69,13 +69,25 @@ function ierg4210_login() {
     $email = strtolower($_POST["EMAIL"]);
 
     $password = $_POST["PASSWORD"];
-    $pwSanitized = filter_var($email, FILTER_SANITIZE_STRING);
+
     $emailSanitized = filter_var($email, FILTER_SANITIZE_EMAIL);
 
-    if (!preg_match('/^[\w._%+-]+[a-zA-Z\d]+\@[\w.-]+\.[a-z]{2,8}$/', $emailSanitized) || !filter_var($emailSanitized, FILTER_VALIDATE_EMAIL))
+    if (!preg_match('/^[\w._%+-]+[a-zA-Z\d]+\@[\w.-]+\.[a-z]{2,8}$/', $emailSanitized) || !filter_var($emailSanitized, FILTER_VALIDATE_EMAIL)){
+
+        header('Location: /login.php?error=2');
+
         throw new Exception("invalid-email");
-    if (!preg_match('/^.+$/', $password))
+        exit();
+    }
+
+    if (!preg_match('/^.+$/', $password)){
+
+        header('Location: /login.php?error=2');
+
         throw new Exception("invalid-password");
+        exit();
+    }
+
 
     $db = ierg4210_DB_user();
 
@@ -93,7 +105,7 @@ function ierg4210_login() {
             print_r($dbAcc['UID']) ;
 
             // redirect to login page
-            header('Location: /login.php?');
+            header('Location: /login.php?error=1');
             exit();
         }
 
@@ -105,7 +117,10 @@ function ierg4210_login() {
         // hash the user-entered password with salt from the database record
         $passwordHashed = hash_hmac('sha256', $password, $salt);
 
-        echo $passwordHashed;
+        echo($dbPassword);
+        echo(" ");
+        echo($passwordHashed);
+        echo(" ");
         // hash matched with DB
         if ( $passwordHashed == $dbPassword) {
 
@@ -131,32 +146,136 @@ function ierg4210_login() {
             else {
                 header('Location: /home.php',302);
                 exit();
-           }
+            }
         }
-        throw new Exception('Wrong Credential');
-        // account credentials did not match
-        header('Location: login.php?error=3');
+            // account credentials did not match
+          new Exception('Wrong Credential');
+
+        header('Location: ../login.php?error=2');
         exit();
     }
 
     // something went wrong
     else {
         throw new Exception('ERROR');
-        header('Location: login.php?error=4');
+        header('Location: ../login.php?error=3');
         exit();
     }
 
 }
 
 function ierg4210_logout(){
+
     setcookie('auth', '', time() - 3600);
-
     unset($_SESSION['auth']);
-
-
-    header('Location: /home.php', 302);
+    unset($_COOKIE['auth']);
+    header('Location: ../home.php', 302);
 
     exit();
 }
 
+function ierg4210_resetPW(){
+
+    $email = strtolower($_POST["RESETEMAIL"]);
+
+    $oldPW = $_POST["OLDPASSWORD"];
+
+
+    $pwSanitized = filter_var($oldPW, FILTER_SANITIZE_STRING);
+    $emailSanitized = filter_var($email, FILTER_SANITIZE_EMAIL);
+
+        if (!preg_match('/^[\w._%+-]+[a-zA-Z\d]+\@[\w.-]+\.[a-z]{2,8}$/', $emailSanitized) || !filter_var($emailSanitized, FILTER_VALIDATE_EMAIL)){
+            throw new Exception("invalid-email");
+            header('Location: /login.php?error=2');
+            exit();
+        }
+
+        if (!preg_match('/^.+$/', $oldPW)){
+            header('Location: /login.php?error=2');
+            throw new Exception("invalid-password");
+            exit();
+        }
+
+
+            $db = ierg4210_DB_user();
+
+            // try to fetch the account from database using user-entered email
+            $sql = "SELECT * FROM USER WHERE EMAIL=?;";
+
+            $q = $db->prepare($sql);
+            $q->bindParam(1, $emailSanitized);
+
+            if ($q->execute()) {
+                $dbAcc = $q->fetch();
+                // account does not exist
+                if ($dbAcc['UID'] == null) {
+
+                    // redirect to login page
+                    header('Location: /login.php?error=1');
+                    exit();
+                }
+
+                // get the salt and password from database
+                $salt = $dbAcc["SALT"];
+
+                $dbPassword = $dbAcc["PASSWORD"];
+
+                // hash the user-entered password with salt from the database record
+                $oldK = hash_hmac('sha256', $pwSanitized, $salt);
+
+
+
+                // hash matched with DB
+                if ( $oldK == $dbPassword) {
+
+
+
+                    $newPW = $_POST["NEWPASSWORD"];
+
+
+                    $salt =mt_rand();
+                    $newK =  hash_hmac('sha256', $newPW, $salt);
+
+
+                    $exp = time() + 3600 * 24 * 3;
+
+                    // t array (email, expire time, key)
+                    $t = array('em'=>$email, 'exp'=>$exp, 'k'=>hash_hmac('sha256', $exp.$newK, $salt));
+
+                    // set the cookie with the above t
+                    // http only on the second last true
+                    setcookie('auth', json_encode($t), $exp, '', '', true, true);
+
+                    // put it in the session
+                    $_SESSION['auth'] = $t;
+
+                    // update new password
+                    $sql = "UPDATE USER SET PASSWORD=? , SALT=?WHERE EMAIL =?;";
+
+                    $q = $db->prepare($sql);
+                    $q->bindParam(1, $newK);
+                    $q->bindParam(2, $salt);
+                    $q->bindParam(3, $emailSanitized);
+                    $q->execute();
+
+
+                    //after update, foce to logout
+                    session_regenerate_id();
+                    ierg4210_logout();
+                    header('Location: /home.php');
+                    exit();
+                }else{
+
+                    echo ("INVALID CRED");
+                    header('Location: /login.php?error=2');
+                    exit();
+                }
+            }else{
+                echo ("NO such user");
+                header('Location: /login.php?error=2');
+                throw new Exception("invalid-password");
+                exit();
+            }
+
+}
 

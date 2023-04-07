@@ -12,13 +12,16 @@ $prod_box ='';
 $login ='';
 
 $welcome='';
+$name='Guest';
 $adminPanel='';
+
+
 
 if (session_id() == null){
     session_start();
 }
 
-if(auth() == 1 || auth() == 2){
+if(auth() >= 1){
     $login .= '<form class="user-menu" method="POST" action="/admin/auth-process.php?action=logout" enctype="multipart/form-data">
                     <input  class="log-out-outside" type="submit" value="Logout">
                 </form>';
@@ -26,12 +29,16 @@ if(auth() == 1 || auth() == 2){
     if(auth() == 1){
         $adminPanel ='  <a href="/admin/admin.php" class="logo">Manage</a>';
     }
-    $welcome='<p> Welcome! , '.$_SESSION['auth']['em'].' </p>';
-}else{
-    $login =  '<a href="/login.php" class="logo">Login</a>';
-    $welcome='<p> Welcome!, Guess </p>';
-}
+    if (!empty($_SESSION['auth'])) {
+        $name = substr($_SESSION['auth']['em'], 0, strrpos($_SESSION['auth']['em'],"@"));
+    }
 
+}else{
+
+    $login =  '<a href="/login.php" class="logo">Login</a>';
+
+}
+$welcome='<p> Welcome! , '.$name.' </p>';
 
     foreach ($cat as $ent_cat){
 
@@ -55,8 +62,6 @@ foreach ($fetch_prod as $value_prod) {
                       </li>';
 
     $count++;
-    // $li_cat .= '<li class="selected" ><a  class="category" href="category.php?cid='.$value_cat["CID"].'"><span>'.$value_cat["NAME"].'</span></a></li>';
-
 
 }
 ?>
@@ -108,6 +113,9 @@ foreach ($fetch_prod as $value_prod) {
                               <div class="total-price"></div>
                            </div>
                            <!--Purchase-->
+                           <?php require_once('./payment.php');
+
+                           ?>
                            <button type="button" class="buy-button">Purchase</button>
                         </div>
                   

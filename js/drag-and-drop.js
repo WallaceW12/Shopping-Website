@@ -1,3 +1,4 @@
+
 const dropZone = document.querySelector(".drop_add .drop-zone");
 const inputElement = document.querySelector(".drop_add .drop-zone .upload_button");
 
@@ -35,30 +36,27 @@ dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
 });
 dropZone.addEventListener('drop', (e) => {
-
-
     e.preventDefault();
-
     img.style = "display:block;";
     let file = e.dataTransfer.files[0];
-
 
     //read img file
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onloadend = function () {
-        e.preventDefault()
+    reader.onload = function () {
+        e.preventDefault();
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+
+        inputElement.files = dataTransfer.files;
+
         //disappear text
         p.style = 'display: none';
         let src = this.result;
-        let localpath = file.name;
         img.src = src;
-       img.alt = file.name
-
+        img.alt = file.name;
     }
-    console.log(document.getElementsByClassName("upload_button"));
-
-
 });
 
 

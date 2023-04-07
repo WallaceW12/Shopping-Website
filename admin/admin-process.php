@@ -3,6 +3,8 @@ include_once('lib/db.inc.php');
 if (session_id() == null)
     session_start();
 
+session_regenerate_id();
+
 include_once('./auth.php');
 include_once('../csrf.php');
 

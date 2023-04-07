@@ -1,5 +1,5 @@
-const all_textarea = document.querySelectorAll("text");
-const textarea_pattern = /^[\w\r\n\-\.\,\'\"\(\)\?\&\%\!\:\/\*\+\; ]+$/;
+const all_textarea = document.querySelectorAll("textarea");
+const textarea_pattern = '/^[\w\r\n\-\.\,\'\"\(\)\?\&\%\!\:\/\*\+\; ]+$/';
 
 all_textarea.forEach((textarea) => {
     textarea.addEventListener("keyup", (e) => {

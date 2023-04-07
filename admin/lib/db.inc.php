@@ -43,6 +43,7 @@ function ierg4210_prod_insert() {
    // $_POST['description'] = (string) $_POST['description'];
 
     $cid = $_POST["CID"];
+
     $name = $_POST["NAME"];
     $price = $_POST["PRICE"];
     $inventory = $_POST["INVENTORY"];
@@ -70,7 +71,7 @@ function ierg4210_prod_insert() {
 
     if ($_FILES['IMAGE']['error'] == 0
         && ($_FILES['IMAGE']['type'] == "image/jpeg" || $_FILES['IMAGE']['type'] == "image/png" || $_FILES['IMAGE']['type'] == "image/gif")
-       // && (mime_content_type($_FILES['IMAGE']["tmp_name"]) == "image/jpeg" || mime_content_type($_FILES['IMAGE']["tmp_name"]) == "image/png" || mime_content_type($_FILES['IMAGE']["tmp_name"]) == "image/gif" )
+        && (mime_content_type($_FILES['IMAGE']["tmp_name"]) == "image/jpeg" || mime_content_type($_FILES['IMAGE']["tmp_name"]) == "image/png" || mime_content_type($_FILES['IMAGE']["tmp_name"]) == "image/gif" )
         && $_FILES['IMAGE']['size'] < 40000000) {
 
 
@@ -87,7 +88,7 @@ function ierg4210_prod_insert() {
 
             $source=imagecreatefromjpeg($file);
 
-           // header('Content-Type: image/jpeg');
+            header('Content-Type: image/jpeg');
             $temp_thumb = imagescale($source, 300, $nheight);
 
             if(move_uploaded_file($file, "/var/www/html/images/" . $lastId . ".jpg") ) {

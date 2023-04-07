@@ -167,7 +167,11 @@ function updateCartLocal(mode,pid, additem){
 
 
 
+
+
     if(mode == "load") {
+
+
 
 
 
@@ -176,9 +180,9 @@ function updateCartLocal(mode,pid, additem){
 
           //  let product = document.querySelector(``);
 
-       　
-            let pid = localStorage.key(i);
-           // console.log(pid)
+            let pid;
+           if( (localStorage.key(i) != "__paypal_storage__" )){
+               pid = localStorage.key(i)
             let image = '';
             let title='';
             let price=0;
@@ -191,7 +195,6 @@ function updateCartLocal(mode,pid, additem){
 
             let request = new XMLHttpRequest();
             request.onreadystatechange = function () {
-
 
               //  let cartRowContent = document.querySelector(`#cart-box-template`);
             if(this.readyState==4){
@@ -240,11 +243,9 @@ function updateCartLocal(mode,pid, additem){
 
             }
             }
-
-            request.open("GET", "cart-update.php?pid=" + pid, true);
-            request.send();
-
-
+               request.open("GET", "cart-update.php?pid=" + pid, true);
+               request.send();
+           }
 
             };
 
@@ -330,4 +331,52 @@ function TotalPrice(){
     });
 
     return totalPrice;
+}
+function getCartItems() {
+    /* @TODO Comment out the current return statement */
+    /* ========== REGION START ========== */
+   /* return [
+        {
+            pid: 1, quantity: 1,
+        },
+        {
+            pid: 2, quantity: 2
+        }
+    ];*/
+
+    /* ========== REGION END ========== */
+
+    /* @TODO Your Implementation Here. */
+    /* ========== REGION START ========== */
+    let output="";
+    for (let i = 0; i < localStorage.length; i++) {
+
+        //  let product = document.querySelector(``);
+
+        let pid;
+        let item_quantity;
+        if ((localStorage.key(i) != "__paypal_storage__")) {
+            pid = localStorage.key(i)
+            item_quantity = localStorage.getItem(pid);
+
+            output += "{ pid: " + pid + ", quantity: "+item_quantity +" },";
+        }
+        console.log([output]);
+
+    }
+    return [output];
+        /* ========== REGION END ========== */
+
+}
+
+/**
+ * This function clears all items in the cart.
+ */
+function clearCart() {
+    /* @TODO Your Implementation Here. */
+    /* ========== REGION START ========== */
+
+
+
+    /* ========== REGION END ========== */
 }

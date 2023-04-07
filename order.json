@@ -1,0 +1,124 @@
+{
+    "id": "91U06035S4154881X",
+    "intent": "CAPTURE",
+    "status": "COMPLETED",
+    "purchase_units": [
+        {
+            "reference_id": "default",
+            "amount": {
+                "currency_code": "USD",
+                "value": "5.00",
+                "breakdown": {
+                    "item_total": {
+                        "currency_code": "USD",
+                        "value": "5.00"
+                    },
+                    "shipping": {
+                        "currency_code": "USD",
+                        "value": "0.00"
+                    },
+                    "handling": {
+                        "currency_code": "USD",
+                        "value": "0.00"
+                    },
+                    "insurance": {
+                        "currency_code": "USD",
+                        "value": "0.00"
+                    },
+                    "shipping_discount": {
+                        "currency_code": "USD",
+                        "value": "0.00"
+                    }
+                }
+            },
+            "payee": {
+                "email_address": "sb-hnszm15459856@business.example.com",
+                "merchant_id": "3RMT45TAW9JN6"
+            },
+            "description": "1:ProductA",
+            "custom_id": "a26cdf3a6e709124385d4d7eb9bff6b897a58ed5597fbab779b89849dbe81b21",
+            "invoice_id": "1c6253bb-2954-c9db-f477-0315948cae47",
+            "items": [
+                {
+                    "name": "1:ProductA",
+                    "unit_amount": {
+                        "currency_code": "USD",
+                        "value": "1.00"
+                    },
+                    "tax": {
+                        "currency_code": "USD",
+                        "value": "0.00"
+                    },
+                    "quantity": "1"
+                },
+                {
+                    "name": "2:ProductB",
+                    "unit_amount": {
+                        "currency_code": "USD",
+                        "value": "2.00"
+                    },
+                    "tax": {
+                        "currency_code": "USD",
+                        "value": "0.00"
+                    },
+                    "quantity": "2"
+                }
+            ],
+            "shipping": {
+                "name": {
+                    "full_name": "Doe John"
+                },
+                "address": {
+                    "address_line_1": "NO 1 Nan Jin Road",
+                    "admin_area_2": "Shanghai",
+                    "admin_area_1": "Shanghai",
+                    "postal_code": "200000",
+                    "country_code": "C2"
+                }
+            },
+            "payments": {
+                "captures": [
+                    {
+                        "id": "55M43422RS774164F",
+                        "status": "COMPLETED",
+                        "amount": {
+                            "currency_code": "USD",
+                            "value": "5.00"
+                        },
+                        "final_capture": true,
+                        "seller_protection": {
+                            "status": "ELIGIBLE",
+                            "dispute_categories": [
+                                "ITEM_NOT_RECEIVED",
+                                "UNAUTHORIZED_TRANSACTION"
+                            ]
+                        },
+                        "invoice_id": "1c6253bb-2954-c9db-f477-0315948cae47",
+                        "create_time": "2023-03-23T09:31:40Z",
+                        "update_time": "2023-03-23T09:31:40Z"
+                    }
+                ]
+            }
+        }
+    ],
+    "payer": {
+        "name": {
+            "given_name": "John",
+            "surname": "Doe"
+        },
+        "email_address": "sb-5qe3r15443822@personal.example.com",
+        "payer_id": "9P6RGRWHTQ9MY",
+        "address": {
+            "country_code": "C2"
+        }
+    },
+    "create_time": "2023-03-23T09:31:21Z",
+    "update_time": "2023-03-23T09:31:40Z",
+    "links": [
+        {
+            "href": "https:\/\/api.sandbox.paypal.com\/v2\/checkout\/orders\/91U06035S4154881X",
+            "rel": "self",
+            "method": "GET"
+        }
+    ]
+}

@@ -6,6 +6,8 @@ require __DIR__.'/lib/db.inc.php';
 if (session_id() == null)
     session_start();
 
+
+
 include_once ('./auth.php');
 include_once('../csrf.php');
 
@@ -20,6 +22,8 @@ try {
     new Exception($e);
 };
 
+
+
 $catList = ierg4210_cat_fetchall();
 $prodList = ierg4210_prod_fetchall();
 
@@ -27,7 +31,13 @@ $prodList = ierg4210_prod_fetchall();
 $options_cat = '';
 $options_prod = '';
 $divs_prod = '';
-$welcome='<p> Welcome! , '.$_SESSION['auth']['em'].' </p>';
+$welcome='';
+$name='Guest';
+
+
+if (!empty($_SESSION['auth'])) {
+    $name = substr($_SESSION['auth']['em'], 0, strrpos($_SESSION['auth']['em'],"@"));
+}
 
 foreach ($catList as $value ){
     $options_cat .= '<option value="'.$value["CID"].'"> '.$value["NAME"].' </option>';
@@ -37,7 +47,7 @@ foreach ($prodList as $value ){
     $options_prod .= '<option value="'.$value["PID"].'"> '.$value["NAME"].' </option>';
 
 }
-
+$welcome='<p> Welcome! , '.$name.' </p>';
 ?>
 <!DOCTYPE html>
 <html>
@@ -48,7 +58,7 @@ foreach ($prodList as $value ){
 
 
         <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
+        <script type="text/javascript" src="/js/adminValidate.js"></script>
     </head>
 
     <body>
@@ -103,7 +113,7 @@ foreach ($prodList as $value ){
                     <div class="drop-zone">
                         <img class="image_uploaded_add" src="" alt="">
                         <p class="drag-and-drop_p">Drop file or click to upload</p>
-                        <input class ="upload_button" type="file"   name="IMAGE" required="true" accept="image/jpeg, image/png, image/gif">
+                        <input class ="upload_button" type="file"  hidden name="IMAGE" required="true" accept="image/jpeg, image/png, image/gif">
                       <script type="text/javascript" src="/js/drag-and-drop.js"></script>
                     </div>
                 </div>
@@ -184,8 +194,8 @@ foreach ($prodList as $value ){
                     <div class="drop-zone">
                         <img class="image_uploaded_add" src="" alt="">
                         <p class="drag-and-drop_p">Drop file or click to upload</p>
-                        <input class ="upload_button" type="file" name="IMAGE"    accept="image/jpeg, image/png, image/gif">
-                       <!-- <script type="text/javascript" src="/js/drag-and-drop-edit.js"> </script>-->
+                        <input class ="upload_button" type="file" name="IMAGE" hidden  required accept="image/jpeg, image/png, image/gif">
+                        <script type="text/javascript" src="/js/drag-and-drop-edit.js"> </script>
                     </div>
                 </div>
 
