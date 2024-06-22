@@ -1,1 +1,2 @@
-# ierg4210
+# Shopping website project
+
