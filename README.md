@@ -22,3 +22,4 @@ This project is a comprehensive shopping website built with PHP, HTML, CSS, and 
 1. Clone the repository:
    ```bash
    git clone https://github.com/WallaceW12/Shopping-Website.git
+ 
